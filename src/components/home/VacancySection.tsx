@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { HiArrowRight } from 'react-icons/hi2'
 import { Link } from 'react-router'
 
 import { fetchVacancies } from '@/api'
+import { ErrorBlock } from '@/components/ui'
 import { routePaths } from '@/routePaths'
 import type { Vacancy } from '@/types'
 
@@ -29,38 +30,46 @@ export function VacancySection() {
         status: 'loading',
     })
 
+    const loadVacancies = useCallback(async (options?: {
+        isStale?: () => boolean
+        showLoading?: boolean
+    }) => {
+        if (options?.showLoading) {
+            setVacanciesState({ status: 'loading' })
+        }
+
+        const response = await fetchVacancies()
+
+        if (options?.isStale?.()) {
+            return
+        }
+
+        if (response.ok) {
+            setVacanciesState({
+                status: 'success',
+                vacancies: response.data,
+            })
+            return
+        }
+
+        setVacanciesState({
+            status: 'error',
+            message: response.error.message,
+        })
+    }, [])
+
     useEffect(() => {
         let shouldIgnore = false
 
-        async function loadVacancies() {
-            setVacanciesState({ status: 'loading' })
-
-            const response = await fetchVacancies()
-
-            if (shouldIgnore) {
-                return
-            }
-
-            if (response.ok) {
-                setVacanciesState({
-                    status: 'success',
-                    vacancies: response.data,
-                })
-                return
-            }
-
-            setVacanciesState({
-                status: 'error',
-                message: response.error.message,
-            })
-        }
-
-        void loadVacancies()
+        // oxlint-disable-next-line react/set-state-in-effect
+        void loadVacancies({
+            isStale: () => shouldIgnore,
+        })
 
         return () => {
             shouldIgnore = true
         }
-    }, [])
+    }, [loadVacancies])
 
     return (
         <div>
@@ -82,14 +91,15 @@ export function VacancySection() {
 
             {vacanciesState.status === 'loading' && <VacancyGridSkeleton />}
             {vacanciesState.status === 'error' && (
-                <div className="border-border bg-surface min-h-[13.25rem] rounded-md border p-5">
-                    <p className="text-primary font-bold">
-                        Не вдалося завантажити вакансії
-                    </p>
-                    <p className="text-muted mt-2 text-sm">
-                        {vacanciesState.message}
-                    </p>
-                </div>
+                <ErrorBlock
+                    title="Не вдалося завантажити вакансії"
+                    message={vacanciesState.message}
+                    onRetry={() =>
+                        void loadVacancies({
+                            showLoading: true,
+                        })
+                    }
+                />
             )}
             {vacanciesState.status === 'success' && (
                 <VacancyGrid vacancies={vacanciesState.vacancies.slice(0, 4)} />

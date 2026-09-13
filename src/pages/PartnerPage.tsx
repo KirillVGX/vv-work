@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router'
+import { useCallback, useEffect, useState } from 'react'
+import { useParams } from 'react-router'
 
 import { fetchPartnerBySlug } from '@/api'
-import { Container, Section } from '@/components/ui'
-import { routePaths } from '@/routePaths'
+import { Container, ErrorBlock, Section } from '@/components/ui'
 import type { Partner } from '@/types'
 
 type PartnerState =
@@ -25,10 +24,11 @@ export function PartnerPage() {
         status: 'loading',
     })
 
-    useEffect(() => {
-        let shouldIgnore = false
-
-        async function loadPartner() {
+    const loadPartner = useCallback(
+        async (options?: {
+            isStale?: () => boolean
+            showLoading?: boolean
+        }) => {
             if (!slug) {
                 setPartnerState({
                     status: 'error',
@@ -37,11 +37,13 @@ export function PartnerPage() {
                 return
             }
 
-            setPartnerState({ status: 'loading' })
+            if (options?.showLoading) {
+                setPartnerState({ status: 'loading' })
+            }
 
             const response = await fetchPartnerBySlug(slug)
 
-            if (shouldIgnore) {
+            if (options?.isStale?.()) {
                 return
             }
 
@@ -57,21 +59,36 @@ export function PartnerPage() {
                 status: 'error',
                 message: response.error.message,
             })
-        }
+        },
+        [slug]
+    )
 
-        void loadPartner()
+    useEffect(() => {
+        let shouldIgnore = false
+
+        // oxlint-disable-next-line react/set-state-in-effect
+        void loadPartner({
+            isStale: () => shouldIgnore,
+        })
 
         return () => {
             shouldIgnore = true
         }
-    }, [slug])
+    }, [loadPartner])
 
     return (
         <Section spacing="lg">
             <Container>
                 {partnerState.status === 'loading' && <PartnerLoading />}
                 {partnerState.status === 'error' && (
-                    <PartnerError message={partnerState.message} />
+                    <PartnerError
+                        message={partnerState.message}
+                        onRetry={() =>
+                            void loadPartner({
+                                showLoading: true,
+                            })
+                        }
+                    />
                 )}
                 {partnerState.status === 'success' && (
                     <PartnerDetails partner={partnerState.partner} />
@@ -126,25 +143,20 @@ function PartnerInfoSkeletonRow() {
     )
 }
 
-function PartnerError({ message }: { message: string }) {
+function PartnerError({
+    message,
+    onRetry,
+}: {
+    message: string
+    onRetry: () => void
+}) {
     return (
-        <div className="border-border bg-surface max-w-xl rounded-md border p-6">
-            <p className="text-muted text-sm font-semibold">
-                Роботодавець
-            </p>
-            <h1 className="text-primary mt-3 text-3xl font-bold">
-                Не вдалося завантажити партнера
-            </h1>
-            <p className="text-muted mt-4 text-base">
-                {message}
-            </p>
-            <Link
-                className="bg-accent text-primary hover:bg-accent-hover focus-visible:outline-accent mt-6 inline-flex h-11 items-center justify-center rounded-md px-5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
-                to={routePaths.home}
-            >
-                На головну
-            </Link>
-        </div>
+        <ErrorBlock
+            title="Не вдалося завантажити партнера"
+            message={message}
+            minHeightClassName="min-h-[18rem]"
+            onRetry={onRetry}
+        />
     )
 }
 

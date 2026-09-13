@@ -1,5 +1,6 @@
 export { Button } from './Button'
 export { Container } from './Container'
+export { ErrorBlock } from './ErrorBlock'
 export { FilterDropdown } from './FilterDropdown'
 export type { FilterDropdownOption } from './FilterDropdown'
 export { Input } from './Input'
