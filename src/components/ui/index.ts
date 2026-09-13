@@ -1,4 +1,6 @@
 export { Button } from './Button'
 export { Container } from './Container'
+export { FilterDropdown } from './FilterDropdown'
+export type { FilterDropdownOption } from './FilterDropdown'
 export { Input } from './Input'
 export { Section } from './Section'

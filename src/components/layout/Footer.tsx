@@ -25,7 +25,7 @@ export function Footer({ className, ...props }: FooterProps) {
                     <div>
                         <p className="text-base font-bold">VV Work</p>
                         <p className="mt-1 max-w-md text-sm text-white/70">
-                            Робочий простір для сучасних цифрових продуктів.
+                            Платформа для пошуку роботи та працівників у Європі.
                         </p>
                     </div>
 
