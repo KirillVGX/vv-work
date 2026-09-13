@@ -1,3 +1,5 @@
+import type { Category, CategoryKey, CountryKey, Vacancy } from '@/types/domain'
+
 const categoryCatalog = [
     {
         key: 'construction',
@@ -27,7 +29,7 @@ const categoryCatalog = [
         key: 'other',
         label: 'Інші',
     },
-] as const
+] as const satisfies readonly Category[]
 
 const countryCatalog = [
     {
@@ -65,29 +67,17 @@ const countryCatalog = [
         label: 'Франція',
         cities: ['Париж', 'Ліон', 'Марсель', 'Лілль', 'Нант', 'Тулуза'],
     },
-] as const
+] as const satisfies readonly {
+    key: CountryKey
+    label: string
+    cities: readonly string[]
+}[]
 
-export const popularCategories = categoryCatalog.map((category) => category.label)
+export const categories: Category[] = [...categoryCatalog]
+export const popularCategories = categories.map((category) => category.label)
 export const countries = countryCatalog.map((country) => country.label)
 
-type CategoryKey = (typeof categoryCatalog)[number]['key']
 type Country = (typeof countryCatalog)[number]
-
-export type VacancyCategory = (typeof popularCategories)[number]
-export type VacancyCountry = (typeof countries)[number]
-
-export type Vacancy = {
-    logo: string
-    logoTone: 'dark' | 'blue' | 'cyan' | 'lime'
-    title: string
-    company: string
-    location: string
-    country: VacancyCountry
-    category: VacancyCategory
-    salary: string
-    match: string
-    tags: string[]
-}
 
 const vacancyPresets: Record<
     CategoryKey,
@@ -390,7 +380,9 @@ function createVacancy(
         company: companies[seed % companies.length],
         location: `${country.cities[presetIndex % country.cities.length]}, ${country.label}`,
         country: country.label,
+        countryKey: country.key,
         category: category.label,
+        categoryKey: category.key,
         salary: preset.salary,
         match: `${92 - (seed % 15)}% match`,
         tags: preset.tags,

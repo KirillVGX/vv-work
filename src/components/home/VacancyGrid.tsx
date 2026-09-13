@@ -1,4 +1,5 @@
-import type { Vacancy } from './homeData'
+import type { Vacancy } from '@/types/domain'
+
 import { VacancyCard } from './VacancyCard'
 
 type VacancyGridProps = {

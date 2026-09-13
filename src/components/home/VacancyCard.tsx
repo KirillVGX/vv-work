@@ -6,8 +6,8 @@ import {
 } from 'react-icons/hi2'
 
 import { cn } from '@/components/ui/utils'
+import type { Vacancy } from '@/types/domain'
 
-import type { Vacancy } from './homeData'
 import { MatchBadge } from './MatchBadge'
 
 type VacancyCardProps = {
