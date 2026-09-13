@@ -1,14 +1,15 @@
-import { useState } from 'react'
 import type { ComponentPropsWithoutRef } from 'react'
+import { useState } from 'react'
+import { Link, NavLink } from 'react-router'
 
-import { Button, Container } from '@/components/ui'
+import { Container } from '@/components/ui'
 import { cn } from '@/components/ui/utils'
+import { routePaths } from '@/routePaths'
 
 const navigationItems = [
-    { label: 'Головна', href: '#' },
-    { label: 'Послуги', href: '#services' },
-    { label: 'Про нас', href: '#about' },
-    { label: 'Контакти', href: '#contacts' },
+    { label: 'Головна', to: routePaths.home },
+    { label: 'Партнери', to: routePaths.demoPartner },
+    { label: 'Контакти', to: routePaths.contacts },
 ]
 
 type HeaderProps = ComponentPropsWithoutRef<'header'>
@@ -26,10 +27,11 @@ export function Header({ className, ...props }: HeaderProps) {
         >
             <Container>
                 <div className="flex min-h-16 items-center justify-between gap-4 py-3">
-                    <a
+                    <Link
                         className="text-primary focus-visible:outline-accent inline-flex items-center gap-3 transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-4"
-                        href="#"
+                        to={routePaths.home}
                         aria-label="VV Work"
+                        onClick={() => setIsMenuOpen(false)}
                     >
                         <span className="bg-primary text-accent flex size-10 items-center justify-center rounded-md text-sm font-bold">
                             VV
@@ -37,26 +39,36 @@ export function Header({ className, ...props }: HeaderProps) {
                         <span className="text-lg font-bold tracking-normal">
                             VV Work
                         </span>
-                    </a>
+                    </Link>
 
                     <nav
                         className="hidden items-center gap-1 md:flex"
                         aria-label="Основна навігація"
                     >
                         {navigationItems.map((item) => (
-                            <a
-                                className="text-muted hover:bg-background hover:text-primary focus-visible:outline-accent rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
-                                href={item.href}
-                                key={item.href}
+                            <NavLink
+                                className={({ isActive }) =>
+                                    cn(
+                                        'focus-visible:outline-accent rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2',
+                                        isActive
+                                            ? 'bg-background text-primary'
+                                            : 'text-muted hover:bg-background hover:text-primary'
+                                    )
+                                }
+                                to={item.to}
+                                key={item.to}
                             >
                                 {item.label}
-                            </a>
+                            </NavLink>
                         ))}
                     </nav>
 
-                    <div className="hidden md:block">
-                        <Button size="sm">Звʼязатися</Button>
-                    </div>
+                    <Link
+                        className="bg-accent text-primary hover:bg-accent-hover focus-visible:outline-accent hidden h-9 items-center justify-center rounded-md px-4 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 md:inline-flex"
+                        to={routePaths.contacts}
+                    >
+                        Звʼязатися
+                    </Link>
 
                     <button
                         className="border-border bg-surface text-primary hover:border-primary hover:bg-background focus-visible:outline-accent inline-flex size-10 items-center justify-center rounded-md border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60 md:hidden"
@@ -104,21 +116,29 @@ export function Header({ className, ...props }: HeaderProps) {
                     <div className="min-h-0">
                         <div className="flex flex-col gap-1">
                             {navigationItems.map((item) => (
-                                <a
-                                    className="text-muted hover:bg-background hover:text-primary focus-visible:outline-accent rounded-md px-3 py-3 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
-                                    href={item.href}
-                                    key={item.href}
+                                <NavLink
+                                    className={({ isActive }) =>
+                                        cn(
+                                            'focus-visible:outline-accent rounded-md px-3 py-3 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2',
+                                            isActive
+                                                ? 'bg-background text-primary'
+                                                : 'text-muted hover:bg-background hover:text-primary'
+                                        )
+                                    }
+                                    to={item.to}
+                                    key={item.to}
                                     onClick={() => setIsMenuOpen(false)}
                                 >
                                     {item.label}
-                                </a>
+                                </NavLink>
                             ))}
-                            <Button
-                                className="mt-2"
-                                fullWidth
+                            <Link
+                                className="bg-accent text-primary hover:bg-accent-hover focus-visible:outline-accent mt-2 inline-flex h-11 w-full items-center justify-center rounded-md px-5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
+                                to={routePaths.contacts}
+                                onClick={() => setIsMenuOpen(false)}
                             >
                                 Звʼязатися
-                            </Button>
+                            </Link>
                         </div>
                     </div>
                 </nav>

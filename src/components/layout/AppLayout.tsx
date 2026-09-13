@@ -1,4 +1,5 @@
 import type { ComponentPropsWithoutRef } from 'react'
+import { Outlet } from 'react-router'
 
 import { cn } from '@/components/ui/utils'
 
@@ -17,7 +18,7 @@ export function AppLayout({ children, className, ...props }: AppLayoutProps) {
             {...props}
         >
             <Header />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1">{children ?? <Outlet />}</main>
             <Footer />
         </div>
     )

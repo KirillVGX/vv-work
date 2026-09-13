@@ -1,11 +1,12 @@
 import type { ComponentPropsWithoutRef } from 'react'
+import { Link } from 'react-router'
 
 import { Container } from '@/components/ui'
 import { cn } from '@/components/ui/utils'
 
 const footerLinks = [
-    { label: 'Політика конфіденційності', href: '#privacy' },
-    { label: 'Умови користування', href: '#terms' },
+    { label: 'Політика конфіденційності', to: '#privacy' },
+    { label: 'Умови користування', to: '#terms' },
 ]
 
 type FooterProps = ComponentPropsWithoutRef<'footer'>
@@ -33,13 +34,13 @@ export function Footer({ className, ...props }: FooterProps) {
                         aria-label="Додаткова навігація"
                     >
                         {footerLinks.map((item) => (
-                            <a
+                            <Link
                                 className="hover:text-accent focus-visible:outline-accent transition-colors focus-visible:outline-2 focus-visible:outline-offset-4"
-                                href={item.href}
-                                key={item.href}
+                                to={item.to}
+                                key={item.to}
                             >
                                 {item.label}
-                            </a>
+                            </Link>
                         ))}
                     </nav>
                 </div>
