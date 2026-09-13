@@ -1,17 +1,26 @@
 import { useCallback, useEffect, useState } from 'react'
+import { HiBriefcase } from 'react-icons/hi2'
 import { useParams } from 'react-router'
 
-import { fetchPartnerBySlug } from '@/api'
+import {
+    fetchPartnerBySlug,
+    fetchVacanciesByPartnerSlug,
+} from '@/api'
+import {
+    VacancyGrid,
+    VacancyGridSkeleton,
+} from '@/components/home'
 import { Container, ErrorBlock, Section } from '@/components/ui'
-import type { Partner } from '@/types'
+import type { Partner, Vacancy } from '@/types'
 
-type PartnerState =
+type PartnerPageState =
     | {
           status: 'loading'
       }
     | {
           status: 'success'
           partner: Partner
+          vacancies: Vacancy[]
       }
     | {
           status: 'error'
@@ -20,17 +29,17 @@ type PartnerState =
 
 export function PartnerPage() {
     const { slug } = useParams()
-    const [partnerState, setPartnerState] = useState<PartnerState>({
+    const [pageState, setPageState] = useState<PartnerPageState>({
         status: 'loading',
     })
 
-    const loadPartner = useCallback(
+    const loadPartnerPage = useCallback(
         async (options?: {
             isStale?: () => boolean
             showLoading?: boolean
         }) => {
             if (!slug) {
-                setPartnerState({
+                setPageState({
                     status: 'error',
                     message: 'Партнера не знайдено',
                 })
@@ -38,26 +47,38 @@ export function PartnerPage() {
             }
 
             if (options?.showLoading) {
-                setPartnerState({ status: 'loading' })
+                setPageState({ status: 'loading' })
             }
 
-            const response = await fetchPartnerBySlug(slug)
+            const [partnerResponse, vacanciesResponse] = await Promise.all([
+                fetchPartnerBySlug(slug),
+                fetchVacanciesByPartnerSlug(slug),
+            ])
 
             if (options?.isStale?.()) {
                 return
             }
 
-            if (response.ok) {
-                setPartnerState({
-                    status: 'success',
-                    partner: response.data,
+            if (!partnerResponse.ok) {
+                setPageState({
+                    status: 'error',
+                    message: partnerResponse.error.message,
                 })
                 return
             }
 
-            setPartnerState({
-                status: 'error',
-                message: response.error.message,
+            if (!vacanciesResponse.ok) {
+                setPageState({
+                    status: 'error',
+                    message: vacanciesResponse.error.message,
+                })
+                return
+            }
+
+            setPageState({
+                status: 'success',
+                partner: partnerResponse.data,
+                vacancies: vacanciesResponse.data,
             })
         },
         [slug]
@@ -67,96 +88,84 @@ export function PartnerPage() {
         let shouldIgnore = false
 
         // oxlint-disable-next-line react/set-state-in-effect
-        void loadPartner({
+        void loadPartnerPage({
             isStale: () => shouldIgnore,
         })
 
         return () => {
             shouldIgnore = true
         }
-    }, [loadPartner])
+    }, [loadPartnerPage])
 
     return (
         <Section spacing="lg">
             <Container>
-                {partnerState.status === 'loading' && <PartnerLoading />}
-                {partnerState.status === 'error' && (
-                    <PartnerError
-                        message={partnerState.message}
+                {pageState.status === 'loading' && <PartnerPageLoading />}
+                {pageState.status === 'error' && (
+                    <ErrorBlock
+                        title="Не вдалося завантажити сторінку партнера"
+                        message={pageState.message}
+                        minHeightClassName="min-h-[18rem]"
                         onRetry={() =>
-                            void loadPartner({
+                            void loadPartnerPage({
                                 showLoading: true,
                             })
                         }
                     />
                 )}
-                {partnerState.status === 'success' && (
-                    <PartnerDetails partner={partnerState.partner} />
+                {pageState.status === 'success' && (
+                    <PartnerPageContent
+                        partner={pageState.partner}
+                        vacancies={pageState.vacancies}
+                    />
                 )}
             </Container>
         </Section>
     )
 }
 
-function PartnerLoading() {
+function PartnerPageLoading() {
     return (
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
-            <div className="max-w-3xl">
-                <div className="bg-border h-4 w-32 animate-pulse rounded-md" />
-                <div className="mt-4 flex items-center gap-4">
-                    <div className="bg-border size-14 animate-pulse rounded-md" />
-                    <div className="flex-1">
-                        <div className="bg-border h-12 w-full max-w-md animate-pulse rounded-md" />
-                        <div className="bg-border mt-3 h-4 w-48 animate-pulse rounded-md" />
-                    </div>
-                </div>
-                <div className="bg-border mt-6 h-5 w-full max-w-2xl animate-pulse rounded-md" />
-                <div className="bg-border mt-3 h-5 w-full max-w-xl animate-pulse rounded-md" />
-                <div className="bg-border mt-3 h-5 w-full max-w-lg animate-pulse rounded-md" />
-            </div>
-
-            <aside className="border-border bg-surface rounded-md border p-6">
-                <div className="bg-border h-6 w-28 animate-pulse rounded-md" />
-                <div className="mt-5 grid gap-4">
-                    <PartnerInfoSkeletonRow />
-                    <PartnerInfoSkeletonRow />
-                    <div>
-                        <div className="bg-border h-4 w-20 animate-pulse rounded-md" />
-                        <div className="mt-2 flex flex-wrap gap-2">
-                            <div className="bg-border h-7 w-24 animate-pulse rounded-md" />
-                            <div className="bg-border h-7 w-28 animate-pulse rounded-md" />
-                            <div className="bg-border h-7 w-20 animate-pulse rounded-md" />
-                        </div>
-                    </div>
-                </div>
-            </aside>
+        <div className="grid gap-10">
+            <PartnerInfoSkeleton />
+            <VacanciesBlockHeaderSkeleton />
+            <VacancyGridSkeleton count={8} />
         </div>
     )
 }
 
-function PartnerInfoSkeletonRow() {
-    return (
-        <div>
-            <div className="bg-border h-4 w-20 animate-pulse rounded-md" />
-            <div className="bg-border mt-2 h-5 w-36 animate-pulse rounded-md" />
-        </div>
-    )
-}
-
-function PartnerError({
-    message,
-    onRetry,
+function PartnerPageContent({
+    partner,
+    vacancies,
 }: {
-    message: string
-    onRetry: () => void
+    partner: Partner
+    vacancies: Vacancy[]
 }) {
     return (
-        <ErrorBlock
-            title="Не вдалося завантажити партнера"
-            message={message}
-            minHeightClassName="min-h-[18rem]"
-            onRetry={onRetry}
-        />
+        <div className="grid gap-10">
+            <PartnerDetails partner={partner} />
+            <section>
+                <div className="mb-6 flex items-center justify-between gap-4">
+                    <div>
+                        <p className="text-muted text-sm font-semibold">
+                            Вакансії партнера
+                        </p>
+                        <h2 className="text-primary mt-2 text-3xl font-bold">
+                            Актуальні пропозиції
+                        </h2>
+                    </div>
+                    <p className="text-muted hidden text-sm font-semibold md:block">
+                        {vacancies.length} вакансій
+                    </p>
+                </div>
+
+                {vacancies.length > 0 ? (
+                    <VacancyGrid vacancies={vacancies} />
+                ) : (
+                    <PartnerVacanciesEmpty />
+                )}
+            </section>
+        </div>
     )
 }
 
@@ -219,6 +228,80 @@ function PartnerDetails({ partner }: { partner: Partner }) {
                     </div>
                 </dl>
             </aside>
+        </div>
+    )
+}
+
+function PartnerVacanciesEmpty() {
+    return (
+        <div className="border-border bg-surface flex min-h-[13.25rem] flex-col items-start justify-center rounded-md border p-6">
+            <span className="bg-accent/25 text-success flex size-11 items-center justify-center rounded-md">
+                <HiBriefcase
+                    aria-hidden="true"
+                    className="size-5"
+                />
+            </span>
+            <h3 className="text-primary mt-4 text-xl font-bold">
+                Поки немає відкритих вакансій
+            </h3>
+            <p className="text-muted mt-2 max-w-xl text-sm leading-6">
+                Партнер уже є на платформі, але ще не опублікував активні
+                пропозиції. Вакансії з'являться тут після оновлення даних.
+            </p>
+        </div>
+    )
+}
+
+function PartnerInfoSkeleton() {
+    return (
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
+            <div className="max-w-3xl">
+                <div className="bg-border h-4 w-32 animate-pulse rounded-md" />
+                <div className="mt-4 flex items-center gap-4">
+                    <div className="bg-border size-14 animate-pulse rounded-md" />
+                    <div className="flex-1">
+                        <div className="bg-border h-12 w-full max-w-md animate-pulse rounded-md" />
+                        <div className="bg-border mt-3 h-4 w-48 animate-pulse rounded-md" />
+                    </div>
+                </div>
+                <div className="bg-border mt-6 h-5 w-full max-w-2xl animate-pulse rounded-md" />
+                <div className="bg-border mt-3 h-5 w-full max-w-xl animate-pulse rounded-md" />
+                <div className="bg-border mt-3 h-5 w-full max-w-lg animate-pulse rounded-md" />
+            </div>
+
+            <aside className="border-border bg-surface rounded-md border p-6">
+                <div className="bg-border h-6 w-28 animate-pulse rounded-md" />
+                <div className="mt-5 grid gap-4">
+                    <PartnerInfoSkeletonRow />
+                    <PartnerInfoSkeletonRow />
+                    <div>
+                        <div className="bg-border h-4 w-20 animate-pulse rounded-md" />
+                        <div className="mt-2 flex flex-wrap gap-2">
+                            <div className="bg-border h-7 w-24 animate-pulse rounded-md" />
+                            <div className="bg-border h-7 w-28 animate-pulse rounded-md" />
+                            <div className="bg-border h-7 w-20 animate-pulse rounded-md" />
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    )
+}
+
+function PartnerInfoSkeletonRow() {
+    return (
+        <div>
+            <div className="bg-border h-4 w-20 animate-pulse rounded-md" />
+            <div className="bg-border mt-2 h-5 w-36 animate-pulse rounded-md" />
+        </div>
+    )
+}
+
+function VacanciesBlockHeaderSkeleton() {
+    return (
+        <div>
+            <div className="bg-border h-4 w-32 animate-pulse rounded-md" />
+            <div className="bg-border mt-2 h-9 w-72 animate-pulse rounded-md" />
         </div>
     )
 }

@@ -36,6 +36,8 @@ export type Partner = {
 export type VacancyLogoTone = 'dark' | 'blue' | 'cyan' | 'lime'
 
 export type Vacancy = {
+    id: string
+    partnerSlug: string
     logo: string
     logoTone: VacancyLogoTone
     title: string

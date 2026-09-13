@@ -4,5 +4,8 @@ export { SearchField } from './SearchField'
 export { CategoryChips } from './CategoryChips'
 export { MatchBadge } from './MatchBadge'
 export { VacancyCard } from './VacancyCard'
-export { VacancyGrid } from './VacancyGrid'
+export {
+    VacancyGrid,
+    VacancyGridSkeleton,
+} from './VacancyGrid'
 export { VacancySection } from './VacancySection'

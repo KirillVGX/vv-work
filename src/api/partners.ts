@@ -78,6 +78,27 @@ export const partners: Partner[] = [
         vacanciesCount: 31,
         isVerified: true,
     },
+    {
+        slug: 'new-partner',
+        name: 'New Partner',
+        logo: 'N',
+        country: 'Іспанія',
+        city: 'Мадрид',
+        description:
+            'Новий партнер платформи VV Work, який готує перші вакансії для кандидатів у Європі.',
+        industries: [
+            {
+                key: 'construction',
+                label: 'Будівництво',
+            },
+            {
+                key: 'other',
+                label: 'Інші',
+            },
+        ],
+        vacanciesCount: 0,
+        isVerified: false,
+    },
 ]
 
 export function fetchPartners(): Promise<ApiResponse<PartnersResponse>> {

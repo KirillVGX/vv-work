@@ -1,6 +1,7 @@
 export {
     fetchCategories,
     fetchCountries,
+    fetchVacanciesByPartnerSlug,
     fetchVacancies,
 } from './home'
 export {

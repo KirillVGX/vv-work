@@ -365,6 +365,7 @@ const companies = [
 
 const logoTones: Vacancy['logoTone'][] = ['dark', 'blue', 'cyan', 'lime']
 const logos = ['N', 'L', 'G', 'E', 'B', 'C', 'M', 'H', 'W', 'F', 'R', 'P']
+const partnerSlugs = ['demo-partner', 'logipro', 'eurofood']
 
 function createVacancy(
     country: Country,
@@ -373,7 +374,11 @@ function createVacancy(
     seed: number,
     presetIndex: number
 ): Vacancy {
+    const partnerSlug = partnerSlugs[seed % partnerSlugs.length]
+
     return {
+        id: `${partnerSlug}-${country.key}-${category.key}-${presetIndex}`,
+        partnerSlug,
         logo: logos[seed % logos.length],
         logoTone: logoTones[seed % logoTones.length],
         title: preset.title,

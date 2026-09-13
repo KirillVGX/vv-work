@@ -19,3 +19,11 @@ export function fetchCountries(): Promise<ApiResponse<CountriesResponse>> {
 export function fetchVacancies(): Promise<ApiResponse<VacanciesResponse>> {
     return mockFetch(() => vacancies)
 }
+
+export function fetchVacanciesByPartnerSlug(
+    partnerSlug: string
+): Promise<ApiResponse<VacanciesResponse>> {
+    return mockFetch(() =>
+        vacancies.filter((vacancy) => vacancy.partnerSlug === partnerSlug)
+    )
+}
