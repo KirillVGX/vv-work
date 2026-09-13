@@ -57,6 +57,17 @@
 }
 
 @theme {
+    --color-background: #f7f8f5;
+    --color-surface: #ffffff;
+    --color-primary: #17212b;
+    --color-accent: #b8f34a;
+    --color-accent-hover: #a5de38;
+    --color-text: #17212b;
+    --color-muted: #68727d;
+    --color-border: #e4e7e3;
+    --color-success: #22a06b;
+    --color-error: #d64545;
+
     --breakpoint-xs: 30rem;
     --breakpoint-sm: 40rem;
     --breakpoint-md: 48rem;
@@ -113,8 +124,8 @@
         min-width: 320px;
         min-height: 100vh;
         margin: 0;
-        background: #ffffff;
-        color: #111827;
+        background: var(--color-background);
+        color: var(--color-text);
         font-weight: 400;
     }
 
