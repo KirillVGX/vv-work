@@ -1,34 +1,44 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { HiBriefcase, HiMagnifyingGlass, HiMapPin } from 'react-icons/hi2'
 import { Link } from 'react-router'
 
-import { FilterDropdown } from '@/components/ui'
+import {
+    FilterDropdown,
+    type FilterDropdownOption,
+} from '@/components/ui'
 import { routePaths } from '@/routePaths'
+import type { CategoryKey, CountryKey } from '@/types'
 
-import { countries, popularCategories } from './homeData'
+import { categories, countryOptions as countries } from './homeData'
 import { SearchField } from './SearchField'
 
-export function SearchBar() {
-    const [country, setCountry] = useState('')
-    const [category, setCategory] = useState('')
+type SearchBarProps = {
+    selectedCategory: CategoryKey | ''
+    selectedCountry: CountryKey | ''
+    onCategoryChange: (category: CategoryKey | '') => void
+    onCountryChange: (country: CountryKey | '') => void
+}
 
+export function SearchBar({
+    selectedCategory,
+    selectedCountry,
+    onCategoryChange,
+    onCountryChange,
+}: SearchBarProps) {
     const countryOptions = useMemo(
         () => [
             { label: 'Усі країни', value: '' },
-            ...countries.map((countryItem) => ({
-                label: countryItem,
-                value: countryItem,
-            })),
+            ...countries,
         ],
         []
     )
 
-    const categoryOptions = useMemo(
+    const categoryOptions = useMemo<FilterDropdownOption[]>(
         () => [
             { label: 'Усі категорії', value: '' },
-            ...popularCategories.map((categoryItem) => ({
-                label: categoryItem,
-                value: categoryItem,
+            ...categories.map((categoryItem) => ({
+                label: categoryItem.label,
+                value: categoryItem.key,
             })),
         ],
         []
@@ -56,9 +66,9 @@ export function SearchBar() {
                         />
                     }
                     label="Країна"
-                    value={country}
+                    value={selectedCountry}
                     options={countryOptions}
-                    onChange={setCountry}
+                    onChange={(value) => onCountryChange(value as CountryKey | '')}
                 />
             </div>
             <div className="border-border border-t lg:border-t-0 lg:border-l">
@@ -70,9 +80,9 @@ export function SearchBar() {
                         />
                     }
                     label="Категорія"
-                    value={category}
+                    value={selectedCategory}
                     options={categoryOptions}
-                    onChange={setCategory}
+                    onChange={(value) => onCategoryChange(value as CategoryKey | '')}
                 />
             </div>
 

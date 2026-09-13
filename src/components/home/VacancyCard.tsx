@@ -4,8 +4,10 @@ import {
     HiBriefcase,
     HiMapPin,
 } from 'react-icons/hi2'
+import { Link } from 'react-router'
 
 import { cn } from '@/components/ui/utils'
+import { routePaths } from '@/routePaths'
 import type { Vacancy } from '@/types/domain'
 
 import { MatchBadge } from './MatchBadge'
@@ -22,11 +24,17 @@ const logoToneClasses: Record<Vacancy['logoTone'], string> = {
 }
 
 export function VacancyCard({ vacancy }: VacancyCardProps) {
+    const titleId = `vacancy-${vacancy.id}-title`
+
     return (
-        <article className="border-border bg-surface flex min-h-[13.25rem] flex-col rounded-md border p-5 shadow-sm">
+        <article
+            aria-labelledby={titleId}
+            className="border-border bg-surface hover:border-primary/30 flex min-h-[14.25rem] flex-col rounded-md border p-5 shadow-sm transition-colors"
+        >
             <div className="flex items-start justify-between gap-4">
                 <div className="flex min-w-0 gap-4">
                     <span
+                        aria-hidden="true"
                         className={cn(
                             'flex size-10 shrink-0 items-center justify-center rounded-md text-lg font-bold',
                             logoToneClasses[vacancy.logoTone]
@@ -35,7 +43,10 @@ export function VacancyCard({ vacancy }: VacancyCardProps) {
                         {vacancy.logo}
                     </span>
                     <div className="min-w-0">
-                        <h3 className="text-primary truncate text-sm font-bold">
+                        <h3
+                            className="text-primary truncate text-sm font-bold"
+                            id={titleId}
+                        >
                             {vacancy.title}
                         </h3>
                         <p className="text-muted mt-1 truncate text-sm">
@@ -50,6 +61,13 @@ export function VacancyCard({ vacancy }: VacancyCardProps) {
             </div>
 
             <div className="text-muted mt-4 grid gap-2 text-sm">
+                <p className="flex min-w-0 items-center gap-1.5">
+                    <HiBriefcase
+                        aria-hidden="true"
+                        className="size-4 shrink-0"
+                    />
+                    <span className="truncate">{vacancy.category}</span>
+                </p>
                 <div className="flex items-center justify-between gap-3">
                     <span className="flex min-w-0 items-center gap-1.5">
                         <HiMapPin
@@ -63,7 +81,7 @@ export function VacancyCard({ vacancy }: VacancyCardProps) {
                 <p className="flex items-center gap-1.5">
                     <HiBriefcase
                         aria-hidden="true"
-                        className="size-4"
+                        className="size-4 shrink-0"
                     />
                     Повна зайнятість
                 </p>
@@ -80,14 +98,21 @@ export function VacancyCard({ vacancy }: VacancyCardProps) {
                 ))}
             </div>
 
-            <div className="mt-auto flex items-center justify-between gap-3 pt-5">
+            <div className="mt-auto flex flex-col gap-4 pt-5 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-success text-lg font-bold">
                     {vacancy.salary}
                 </p>
-                <HiArrowRight
-                    aria-hidden="true"
-                    className="text-muted size-5"
-                />
+                <Link
+                    aria-label={`Відгукнутися на вакансію ${vacancy.title}`}
+                    className="text-primary hover:bg-accent focus-visible:outline-accent inline-flex h-9 items-center justify-center gap-2 rounded-md border border-transparent px-3 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
+                    to={routePaths.contacts}
+                >
+                    Відгукнутися
+                    <HiArrowRight
+                        aria-hidden="true"
+                        className="size-4"
+                    />
+                </Link>
             </div>
         </article>
     )

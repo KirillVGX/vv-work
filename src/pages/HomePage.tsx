@@ -1,7 +1,15 @@
+import { useState } from 'react'
+
 import { Hero, VacancySection } from '@/components/home'
 import { Container, Section } from '@/components/ui'
+import type { CategoryKey, CountryKey } from '@/types'
 
 export function HomePage() {
+    const [selectedCategory, setSelectedCategory] = useState<CategoryKey | ''>(
+        ''
+    )
+    const [selectedCountry, setSelectedCountry] = useState<CountryKey | ''>('')
+
     return (
         <>
             <Section
@@ -9,7 +17,12 @@ export function HomePage() {
                 spacing="none"
             >
                 <Container>
-                    <Hero />
+                    <Hero
+                        selectedCategory={selectedCategory}
+                        selectedCountry={selectedCountry}
+                        onCategoryChange={setSelectedCategory}
+                        onCountryChange={setSelectedCountry}
+                    />
                 </Container>
             </Section>
 
@@ -18,7 +31,10 @@ export function HomePage() {
                 spacing="none"
             >
                 <Container>
-                    <VacancySection />
+                    <VacancySection
+                        selectedCategory={selectedCategory}
+                        selectedCountry={selectedCountry}
+                    />
                 </Container>
             </Section>
         </>

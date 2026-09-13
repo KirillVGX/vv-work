@@ -75,6 +75,10 @@ const countryCatalog = [
 
 export const categories: Category[] = [...categoryCatalog]
 export const popularCategories = categories.map((category) => category.label)
+export const countryOptions = countryCatalog.map((country) => ({
+    label: country.label,
+    value: country.key,
+}))
 export const countries = countryCatalog.map((country) => country.label)
 
 type Country = (typeof countryCatalog)[number]

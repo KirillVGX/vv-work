@@ -8,7 +8,7 @@ function SkeletonBlock({ className }: { className: string }) {
 
 export function VacancyCardSkeleton() {
     return (
-        <article className="border-border bg-surface flex min-h-[13.25rem] flex-col rounded-md border p-5 shadow-sm">
+        <article className="border-border bg-surface flex min-h-[14.25rem] flex-col rounded-md border p-5 shadow-sm">
             <div className="flex items-start justify-between gap-4">
                 <div className="flex min-w-0 flex-1 gap-4">
                     <SkeletonBlock className="size-10 shrink-0" />
@@ -21,6 +21,7 @@ export function VacancyCardSkeleton() {
             </div>
 
             <div className="mt-4 grid gap-2">
+                <SkeletonBlock className="h-4 w-2/3" />
                 <div className="flex items-center justify-between gap-3">
                     <SkeletonBlock className="h-4 flex-1" />
                     <SkeletonBlock className="h-6 w-20" />

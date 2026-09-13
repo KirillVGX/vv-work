@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { HiArrowRight } from 'react-icons/hi2'
 import { Link } from 'react-router'
 
 import { fetchVacancies } from '@/api'
 import { ErrorBlock } from '@/components/ui'
 import { routePaths } from '@/routePaths'
-import type { Vacancy } from '@/types'
+import type { CategoryKey, CountryKey, Vacancy } from '@/types'
 
 import {
     VacancyGrid,
@@ -25,7 +25,15 @@ type VacanciesState =
           message: string
       }
 
-export function VacancySection() {
+type VacancySectionProps = {
+    selectedCategory: CategoryKey | ''
+    selectedCountry: CountryKey | ''
+}
+
+export function VacancySection({
+    selectedCategory,
+    selectedCountry,
+}: VacancySectionProps) {
     const [vacanciesState, setVacanciesState] = useState<VacanciesState>({
         status: 'loading',
     })
@@ -71,6 +79,19 @@ export function VacancySection() {
         }
     }, [loadVacancies])
 
+    const visibleVacancies = useMemo(() => {
+        if (vacanciesState.status !== 'success') {
+            return []
+        }
+
+        return vacanciesState.vacancies.filter(
+            (vacancy) =>
+                (!selectedCategory ||
+                    vacancy.categoryKey === selectedCategory) &&
+                (!selectedCountry || vacancy.countryKey === selectedCountry)
+        )
+    }, [selectedCategory, selectedCountry, vacanciesState])
+
     return (
         <div>
             <div className="mb-6 flex items-center justify-between gap-4">
@@ -102,7 +123,7 @@ export function VacancySection() {
                 />
             )}
             {vacanciesState.status === 'success' && (
-                <VacancyGrid vacancies={vacanciesState.vacancies.slice(0, 4)} />
+                <VacancyGrid vacancies={visibleVacancies.slice(0, 4)} />
             )}
         </div>
     )

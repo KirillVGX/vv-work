@@ -1,8 +1,22 @@
+import type { CategoryKey, CountryKey } from '@/types'
+
 import { CategoryChips } from './CategoryChips'
-import { popularCategories } from './homeData'
+import { categories } from './homeData'
 import { SearchBar } from './SearchBar'
 
-export function Hero() {
+type HeroProps = {
+    selectedCategory: CategoryKey | ''
+    selectedCountry: CountryKey | ''
+    onCategoryChange: (category: CategoryKey | '') => void
+    onCountryChange: (country: CountryKey | '') => void
+}
+
+export function Hero({
+    selectedCategory,
+    selectedCountry,
+    onCategoryChange,
+    onCountryChange,
+}: HeroProps) {
     return (
         <div>
             <p className="text-muted text-sm font-bold tracking-[0.32em] uppercase">
@@ -21,8 +35,17 @@ export function Hero() {
                 Простий пошук, зручні фільтри, більше можливостей.
             </p>
 
-            <SearchBar />
-            <CategoryChips categories={popularCategories} />
+            <SearchBar
+                selectedCategory={selectedCategory}
+                selectedCountry={selectedCountry}
+                onCategoryChange={onCategoryChange}
+                onCountryChange={onCountryChange}
+            />
+            <CategoryChips
+                categories={categories}
+                selectedCategory={selectedCategory}
+                onCategoryChange={onCategoryChange}
+            />
         </div>
     )
 }
