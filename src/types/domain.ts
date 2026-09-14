@@ -35,6 +35,23 @@ export type Partner = {
 
 export type VacancyLogoTone = 'dark' | 'blue' | 'cyan' | 'lime'
 
+export type AverageSalaryPoint = {
+    label: string
+    amount: number
+}
+
+export type AverageSalary = {
+    amount: number
+    currency: string
+    changePercent: number
+    year: number
+    points: AverageSalaryPoint[]
+}
+
+export type CurrencyCode = 'EUR' | 'USD' | 'UAH'
+
+export type ExchangeRates = Record<Exclude<CurrencyCode, 'EUR'>, number>
+
 export type Vacancy = {
     id: string
     partnerSlug: string

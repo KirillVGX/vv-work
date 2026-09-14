@@ -1,12 +1,41 @@
 import { categories, countries, vacancies } from '@/components/home/homeData'
 import type {
+    AverageSalaryResponse,
     CategoriesResponse,
     CountriesResponse,
+    ExchangeRatesResponse,
     VacanciesResponse,
 } from '@/types/api'
 
 import { mockFetch } from './mockFetch'
 import type { ApiResponse } from './types'
+
+// Eurostat: annual net earnings (EUR), single person without children
+// earning 100% of the average wage, EU27. Free, no API key, CORS-open.
+// https://ec.europa.eu/eurostat/databrowser/view/earn_nt_net
+const EUROSTAT_AVERAGE_SALARY_URL =
+    'https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/earn_nt_net?format=JSON&lang=EN&currency=EUR&estruct=NET&ecase=P1_NCH_AW100&geo=EU27_2020'
+
+const YEARS_TO_SHOW = 8
+
+type EurostatDataset = {
+    value: Record<string, number>
+    dimension: {
+        time: {
+            category: {
+                index: Record<string, number>
+            }
+        }
+    }
+}
+
+// Frankfurter: ECB reference rates, EUR base. Free, no API key, CORS-open.
+const FRANKFURTER_USD_RATE_URL =
+    'https://api.frankfurter.dev/v1/latest?base=EUR&symbols=USD'
+
+// National Bank of Ukraine: official EUR/UAH rate. Free, no API key, CORS-open.
+const NBU_UAH_RATE_URL =
+    'https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode=EUR&json'
 
 export function fetchCategories(): Promise<ApiResponse<CategoriesResponse>> {
     return mockFetch(() => categories)
@@ -26,4 +55,113 @@ export function fetchVacanciesByPartnerSlug(
     return mockFetch(() =>
         vacancies.filter((vacancy) => vacancy.partnerSlug === partnerSlug)
     )
+}
+
+export async function fetchAverageSalary(): Promise<
+    ApiResponse<AverageSalaryResponse>
+> {
+    try {
+        const response = await fetch(EUROSTAT_AVERAGE_SALARY_URL)
+
+        if (!response.ok) {
+            throw new Error(`Eurostat відповів зі статусом ${response.status}`)
+        }
+
+        const dataset: EurostatDataset = await response.json()
+
+        const orderedYears = Object.entries(dataset.dimension.time.category.index)
+            .sort(([, a], [, b]) => a - b)
+            .map(([year, index]) => ({ year, index }))
+
+        const points = orderedYears
+            .map(({ year, index }) => ({
+                label: year,
+                amount: dataset.value[index],
+            }))
+            .filter(
+                (point): point is { label: string; amount: number } =>
+                    typeof point.amount === 'number'
+            )
+            .slice(-YEARS_TO_SHOW)
+
+        const latest = points[points.length - 1]
+        const previous = points[points.length - 2]
+
+        if (!latest) {
+            throw new Error('Eurostat не повернув дані за жоден рік')
+        }
+
+        const changePercent = previous
+            ? Math.round(
+                  ((latest.amount - previous.amount) / previous.amount) * 1000
+              ) / 10
+            : 0
+
+        return {
+            ok: true,
+            data: {
+                amount: Math.round(latest.amount),
+                currency: 'EUR',
+                changePercent,
+                year: Number(latest.label),
+                points,
+            },
+        }
+    } catch (error) {
+        return {
+            ok: false,
+            error: {
+                message:
+                    error instanceof Error
+                        ? error.message
+                        : 'Не вдалося завантажити дані Eurostat',
+                status: 502,
+            },
+        }
+    }
+}
+
+export async function fetchExchangeRates(): Promise<
+    ApiResponse<ExchangeRatesResponse>
+> {
+    try {
+        const [usdResponse, uahResponse] = await Promise.all([
+            fetch(FRANKFURTER_USD_RATE_URL),
+            fetch(NBU_UAH_RATE_URL),
+        ])
+
+        if (!usdResponse.ok || !uahResponse.ok) {
+            throw new Error('Не вдалося отримати курси валют')
+        }
+
+        const usdPayload: { rates: { USD: number } } =
+            await usdResponse.json()
+        const uahPayload: { rate: number }[] = await uahResponse.json()
+
+        const usdRate = usdPayload.rates.USD
+        const uahRate = uahPayload[0]?.rate
+
+        if (!usdRate || !uahRate) {
+            throw new Error('Курси валют повернулись у неочікуваному форматі')
+        }
+
+        return {
+            ok: true,
+            data: {
+                USD: usdRate,
+                UAH: uahRate,
+            },
+        }
+    } catch (error) {
+        return {
+            ok: false,
+            error: {
+                message:
+                    error instanceof Error
+                        ? error.message
+                        : 'Не вдалося завантажити курси валют',
+                status: 502,
+            },
+        }
+    }
 }

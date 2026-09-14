@@ -1,4 +1,10 @@
-import type { Category, Partner, Vacancy } from './domain'
+import type {
+    AverageSalary,
+    Category,
+    ExchangeRates,
+    Partner,
+    Vacancy,
+} from './domain'
 
 export type ApiSuccess<TData> = {
     ok: true
@@ -21,3 +27,5 @@ export type PartnersResponse = Partner[]
 export type PartnerResponse = Partner
 export type VacanciesResponse = Vacancy[]
 export type VacancyResponse = Vacancy
+export type AverageSalaryResponse = AverageSalary
+export type ExchangeRatesResponse = ExchangeRates

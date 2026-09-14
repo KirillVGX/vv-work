@@ -1,6 +1,8 @@
 export {
+    fetchAverageSalary,
     fetchCategories,
     fetchCountries,
+    fetchExchangeRates,
     fetchVacanciesByPartnerSlug,
     fetchVacancies,
 } from './home'

@@ -2,6 +2,7 @@ export type {
     ApiFailure,
     ApiResponse,
     ApiSuccess,
+    AverageSalaryResponse,
     CategoriesResponse,
     CountriesResponse,
     PartnerResponse,
