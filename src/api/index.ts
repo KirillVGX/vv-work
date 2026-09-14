@@ -3,6 +3,7 @@ export {
     fetchCategories,
     fetchCountries,
     fetchExchangeRates,
+    fetchUpcomingHolidays,
     fetchVacanciesByPartnerSlug,
     fetchVacancies,
 } from './home'

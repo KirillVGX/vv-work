@@ -87,7 +87,6 @@ export function PartnerPage() {
     useEffect(() => {
         let shouldIgnore = false
 
-        // oxlint-disable-next-line react/set-state-in-effect
         void loadPartnerPage({
             isStale: () => shouldIgnore,
         })

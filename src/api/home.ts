@@ -4,15 +4,15 @@ import type {
     CategoriesResponse,
     CountriesResponse,
     ExchangeRatesResponse,
+    HolidaysResponse,
     VacanciesResponse,
 } from '@/types/api'
+import type { CountryKey } from '@/types/domain'
 
 import { mockFetch } from './mockFetch'
+import { translateHolidayName } from './holidayNames'
 import type { ApiResponse } from './types'
 
-// Eurostat: annual net earnings (EUR), single person without children
-// earning 100% of the average wage, EU27. Free, no API key, CORS-open.
-// https://ec.europa.eu/eurostat/databrowser/view/earn_nt_net
 const EUROSTAT_AVERAGE_SALARY_URL =
     'https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/earn_nt_net?format=JSON&lang=EN&currency=EUR&estruct=NET&ecase=P1_NCH_AW100&geo=EU27_2020'
 
@@ -29,13 +29,36 @@ type EurostatDataset = {
     }
 }
 
-// Frankfurter: ECB reference rates, EUR base. Free, no API key, CORS-open.
 const FRANKFURTER_USD_RATE_URL =
     'https://api.frankfurter.dev/v1/latest?base=EUR&symbols=USD'
 
-// National Bank of Ukraine: official EUR/UAH rate. Free, no API key, CORS-open.
 const NBU_UAH_RATE_URL =
     'https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode=EUR&json'
+
+const NAGER_HOLIDAYS_BASE_URL =
+    'https://date.nager.at/api/v3/NextPublicHolidays'
+
+const HOLIDAY_COUNTRIES: {
+    key: CountryKey
+    code: string
+    label: string
+}[] = [
+    { key: 'germany', code: 'DE', label: 'Німеччина' },
+    { key: 'poland', code: 'PL', label: 'Польща' },
+    { key: 'czechia', code: 'CZ', label: 'Чехія' },
+    { key: 'netherlands', code: 'NL', label: 'Нідерланди' },
+    { key: 'spain', code: 'ES', label: 'Іспанія' },
+    { key: 'italy', code: 'IT', label: 'Італія' },
+    { key: 'france', code: 'FR', label: 'Франція' },
+]
+
+const HOLIDAYS_TO_SHOW = 4
+
+type NagerHoliday = {
+    date: string
+    name: string
+    localName: string
+}
 
 export function fetchCategories(): Promise<ApiResponse<CategoriesResponse>> {
     return mockFetch(() => categories)
@@ -69,7 +92,9 @@ export async function fetchAverageSalary(): Promise<
 
         const dataset: EurostatDataset = await response.json()
 
-        const orderedYears = Object.entries(dataset.dimension.time.category.index)
+        const orderedYears = Object.entries(
+            dataset.dimension.time.category.index
+        )
             .sort(([, a], [, b]) => a - b)
             .map(([year, index]) => ({ year, index }))
 
@@ -134,8 +159,7 @@ export async function fetchExchangeRates(): Promise<
             throw new Error('Не вдалося отримати курси валют')
         }
 
-        const usdPayload: { rates: { USD: number } } =
-            await usdResponse.json()
+        const usdPayload: { rates: { USD: number } } = await usdResponse.json()
         const uahPayload: { rate: number }[] = await uahResponse.json()
 
         const usdRate = usdPayload.rates.USD
@@ -160,6 +184,71 @@ export async function fetchExchangeRates(): Promise<
                     error instanceof Error
                         ? error.message
                         : 'Не вдалося завантажити курси валют',
+                status: 502,
+            },
+        }
+    }
+}
+
+export async function fetchUpcomingHolidays(): Promise<
+    ApiResponse<HolidaysResponse>
+> {
+    try {
+        const responses = await Promise.all(
+            HOLIDAY_COUNTRIES.map(async (country) => {
+                const response = await fetch(
+                    `${NAGER_HOLIDAYS_BASE_URL}/${country.code}`
+                )
+
+                if (!response.ok) {
+                    throw new Error(
+                        `Nager.Date відповів зі статусом ${response.status}`
+                    )
+                }
+
+                const holidays: NagerHoliday[] = await response.json()
+
+                return holidays.map((holiday) => ({
+                    countryKey: country.key,
+                    countryLabel: country.label,
+                    countryCode: country.code.toLowerCase(),
+                    date: holiday.date,
+                    name: holiday.name,
+                    localName: holiday.localName,
+                }))
+            })
+        )
+
+        const upcoming = responses
+            .flat()
+            .sort((a, b) => a.date.localeCompare(b.date))
+            .slice(0, HOLIDAYS_TO_SHOW)
+
+        const holidays = await Promise.all(
+            upcoming.map(async (holiday) => ({
+                countryKey: holiday.countryKey,
+                countryLabel: holiday.countryLabel,
+                countryCode: holiday.countryCode,
+                date: holiday.date,
+                title: await translateHolidayName(
+                    holiday.name,
+                    holiday.localName
+                ),
+            }))
+        )
+
+        return {
+            ok: true,
+            data: holidays,
+        }
+    } catch (error) {
+        return {
+            ok: false,
+            error: {
+                message:
+                    error instanceof Error
+                        ? error.message
+                        : 'Не вдалося завантажити свята',
                 status: 502,
             },
         }

@@ -2,6 +2,7 @@ import type {
     AverageSalary,
     Category,
     ExchangeRates,
+    Holiday,
     Partner,
     Vacancy,
 } from './domain'
@@ -29,3 +30,4 @@ export type VacanciesResponse = Vacancy[]
 export type VacancyResponse = Vacancy
 export type AverageSalaryResponse = AverageSalary
 export type ExchangeRatesResponse = ExchangeRates
+export type HolidaysResponse = Holiday[]

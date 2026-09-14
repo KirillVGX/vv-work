@@ -52,6 +52,14 @@ export type CurrencyCode = 'EUR' | 'USD' | 'UAH'
 
 export type ExchangeRates = Record<Exclude<CurrencyCode, 'EUR'>, number>
 
+export type Holiday = {
+    countryKey: CountryKey
+    countryLabel: string
+    countryCode: string
+    date: string
+    title: string
+}
+
 export type Vacancy = {
     id: string
     partnerSlug: string

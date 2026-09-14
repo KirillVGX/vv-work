@@ -37,7 +37,11 @@ import {
 } from 'react-icons/si'
 import { useNavigate } from 'react-router'
 
-import { fetchAverageSalary, fetchExchangeRates } from '@/api'
+import {
+    fetchAverageSalary,
+    fetchExchangeRates,
+    fetchUpcomingHolidays,
+} from '@/api'
 import { Hero } from '@/components/home'
 import { Container, ErrorBlock, Section } from '@/components/ui'
 import { routePaths } from '@/routePaths'
@@ -47,6 +51,7 @@ import type {
     CountryKey,
     CurrencyCode,
     ExchangeRates,
+    Holiday,
 } from '@/types'
 
 const CURRENCY_OPTIONS: {
@@ -195,13 +200,6 @@ const guides = [
     },
 ]
 
-const holidays = [
-    ['DE', '3 жовтня 2026', 'День німецької єдності'],
-    ['PL', '11 листопада 2026', 'День незалежності'],
-    ['CZ', '17 листопада 2026', 'День боротьби за свободу'],
-    ['IT', '8 грудня 2026', 'День Непорочного Зачаття'],
-]
-
 function buildVacanciesPath({
     category,
     country,
@@ -267,7 +265,10 @@ export function HomePage() {
 
     return (
         <>
-            <Section className="pt-8 pb-8 md:pt-12 md:pb-10" spacing="none">
+            <Section
+                className="pt-8 pb-8 md:pt-12 md:pb-10"
+                spacing="none"
+            >
                 <Container>
                     <Hero
                         selectedCategory={selectedCategory}
@@ -365,7 +366,10 @@ function HomePartners() {
     }, [showNextSlide])
 
     return (
-        <Section className="py-8" spacing="none">
+        <Section
+            className="py-8"
+            spacing="none"
+        >
             <Container>
                 <SectionHeader
                     title="Наші партнери"
@@ -380,7 +384,7 @@ function HomePartners() {
                     onPointerUp={handlePointerEnd}
                 >
                     <div
-                        className="flex cursor-grab touch-pan-y select-none transition-transform duration-700 ease-out active:cursor-grabbing"
+                        className="flex cursor-grab touch-pan-y transition-transform duration-700 ease-out select-none active:cursor-grabbing"
                         style={{
                             transform: `translateX(-${activeSlideIndex * 100}%)`,
                             userSelect: 'none',
@@ -419,7 +423,7 @@ function HomePartners() {
                     {partnerSlides.map((_, item) => (
                         <button
                             aria-label={`Показати слайд партнерів ${item + 1}`}
-                            className={`size-2.5 shrink-0 cursor-pointer rounded-full transition-colors ${item === activeSlideIndex ? 'bg-sky-500' : 'bg-[#dfe6e3] hover:bg-muted'}`}
+                            className={`size-2.5 shrink-0 cursor-pointer rounded-full transition-colors ${item === activeSlideIndex ? 'bg-sky-500' : 'hover:bg-muted bg-[#dfe6e3]'}`}
                             key={item}
                             onClick={() => setActiveSlideIndex(item)}
                             type="button"
@@ -433,7 +437,10 @@ function HomePartners() {
 
 function HomeStats() {
     return (
-        <Section className="py-6" spacing="none">
+        <Section
+            className="py-6"
+            spacing="none"
+        >
             <Container>
                 <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
                     {stats.map((item) => {
@@ -450,7 +457,7 @@ function HomeStats() {
                                 <p className="text-primary mt-6 text-3xl font-extrabold">
                                     {item.value}
                                 </p>
-                                <h3 className="text-primary mt-1 text-lg font-bold leading-6">
+                                <h3 className="text-primary mt-1 text-lg leading-6 font-bold">
                                     {item.label}
                                 </h3>
                                 <p className="text-muted mt-4 text-sm leading-6">
@@ -467,7 +474,10 @@ function HomeStats() {
 
 function HomeNews() {
     return (
-        <Section className="py-8" spacing="none">
+        <Section
+            className="py-8"
+            spacing="none"
+        >
             <Container>
                 <SectionHeader
                     title="Новини"
@@ -488,7 +498,7 @@ function HomeNews() {
                                 <p className="text-muted text-sm">
                                     {item.date}
                                 </p>
-                                <h3 className="text-primary mt-3 text-lg font-bold leading-6">
+                                <h3 className="text-primary mt-3 text-lg leading-6 font-bold">
                                     {item.title}
                                 </h3>
                                 <p className="text-muted mt-3 text-sm leading-6">
@@ -505,7 +515,10 @@ function HomeNews() {
 
 function HomeGuides() {
     return (
-        <Section className="py-8" spacing="none">
+        <Section
+            className="py-8"
+            spacing="none"
+        >
             <Container>
                 <SectionHeader
                     title="Корисні інструкції"
@@ -524,7 +537,7 @@ function HomeGuides() {
                                 <span className="flex size-12 items-center justify-center rounded-lg bg-sky-50 text-sky-500">
                                     <Icon className="size-6" />
                                 </span>
-                                <h3 className="text-primary mt-5 font-bold leading-6">
+                                <h3 className="text-primary mt-5 leading-6 font-bold">
                                     {item.title}
                                 </h3>
                                 <div className="mt-5 flex items-end justify-between gap-4">
@@ -618,9 +631,7 @@ function SalaryChart({
             const ratio = (event.clientX - rect.left) / rect.width
             const index = Math.round(ratio * (coords.length - 1))
 
-            setHoveredIndex(
-                Math.min(Math.max(index, 0), coords.length - 1)
-            )
+            setHoveredIndex(Math.min(Math.max(index, 0), coords.length - 1))
         },
         [coords.length]
     )
@@ -742,9 +753,7 @@ function SalaryChart({
 }
 
 function SalaryChartSkeleton() {
-    return (
-        <div className="mt-8 h-28 animate-pulse rounded-lg bg-slate-100" />
-    )
+    return <div className="mt-8 h-28 animate-pulse rounded-lg bg-slate-100" />
 }
 
 function AverageSalaryCard() {
@@ -779,7 +788,6 @@ function AverageSalaryCard() {
     }, [])
 
     useEffect(() => {
-        // oxlint-disable-next-line react/set-state-in-effect
         void loadSalary()
     }, [loadSalary])
 
@@ -802,15 +810,13 @@ function AverageSalaryCard() {
                                     currency
                                 )}
                                 <span className="bg-accent/20 text-success ml-3 rounded-full px-3 py-1 text-sm">
-                                    {state.salary.changePercent > 0
-                                        ? '+'
-                                        : ''}
+                                    {state.salary.changePercent > 0 ? '+' : ''}
                                     {state.salary.changePercent}%
                                 </span>
                             </p>
                             <p className="text-muted mt-3 text-sm">
-                                Річна нетто-зарплата в ЄС за{' '}
-                                {state.salary.year} рік · дані Eurostat
+                                Річна нетто-зарплата в ЄС за {state.salary.year}{' '}
+                                рік · дані Eurostat
                             </p>
                         </>
                     ) : (
@@ -826,7 +832,10 @@ function AverageSalaryCard() {
                         value={currency}
                     >
                         {CURRENCY_OPTIONS.map((option) => (
-                            <option key={option.code} value={option.code}>
+                            <option
+                                key={option.code}
+                                value={option.code}
+                            >
                                 {option.label}
                             </option>
                         ))}
@@ -859,43 +868,127 @@ function AverageSalaryCard() {
     )
 }
 
+type HolidaysCardState =
+    | { status: 'loading' }
+    | { status: 'success'; holidays: Holiday[] }
+    | { status: 'error'; message: string }
+
+const holidayDateFormatter = new Intl.DateTimeFormat('uk-UA', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+})
+
+function HolidaysCardSkeleton() {
+    return (
+        <div className="mt-7 grid gap-3">
+            {Array.from({ length: 4 }).map((_, index) => (
+                <div
+                    className="h-[3.25rem] animate-pulse rounded-md bg-slate-100"
+                    key={index}
+                />
+            ))}
+        </div>
+    )
+}
+
+function HolidaysCard() {
+    const [state, setState] = useState<HolidaysCardState>({
+        status: 'loading',
+    })
+
+    const loadHolidays = useCallback(async () => {
+        setState({ status: 'loading' })
+
+        const response = await fetchUpcomingHolidays()
+
+        if (response.ok) {
+            setState({ status: 'success', holidays: response.data })
+            return
+        }
+
+        setState({ status: 'error', message: response.error.message })
+    }, [])
+
+    useEffect(() => {
+        void loadHolidays()
+    }, [loadHolidays])
+
+    return (
+        <article className="border-border bg-surface rounded-xl border p-8 shadow-sm">
+            <div className="flex gap-4">
+                <span className="bg-accent/20 text-success flex size-12 items-center justify-center rounded-lg">
+                    <HiCalendarDays className="size-6" />
+                </span>
+                <div>
+                    <h2 className="text-primary text-2xl font-bold">
+                        Свята в Європі
+                    </h2>
+                    <p className="text-muted mt-1 text-sm">
+                        Найближчі офіційні вихідні дні · дані Nager.Date
+                    </p>
+                </div>
+            </div>
+            {state.status === 'loading' && <HolidaysCardSkeleton />}
+            {state.status === 'error' && (
+                <div className="mt-7">
+                    <ErrorBlock
+                        message={state.message}
+                        minHeightClassName="min-h-[13rem]"
+                        onRetry={loadHolidays}
+                        title="Не вдалося завантажити свята"
+                    />
+                </div>
+            )}
+            {state.status === 'success' && (
+                <div className="mt-7 grid gap-3">
+                    {state.holidays.map((holiday) => (
+                        <div
+                            className="border-border flex items-center justify-between gap-4 rounded-md border px-4 py-3 text-sm"
+                            key={`${holiday.countryKey}-${holiday.date}`}
+                        >
+                            <div className="flex min-w-0 items-center gap-3">
+                                <img
+                                    alt=""
+                                    aria-hidden="true"
+                                    className="border-border size-9 shrink-0 rounded-full border object-cover"
+                                    height={36}
+                                    loading="lazy"
+                                    src={`https://flagcdn.com/w80/${holiday.countryCode}.png`}
+                                    width={36}
+                                />
+                                <div className="min-w-0">
+                                    <p className="text-primary truncate font-semibold">
+                                        {holiday.countryLabel}
+                                    </p>
+                                    <p className="text-muted text-xs">
+                                        {holidayDateFormatter.format(
+                                            new Date(holiday.date)
+                                        )}
+                                    </p>
+                                </div>
+                            </div>
+                            <span className="text-primary text-right font-medium">
+                                {holiday.title}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </article>
+    )
+}
+
 function HomeInfoGrid() {
     return (
-        <Section className="py-8" spacing="none">
+        <Section
+            className="py-8"
+            spacing="none"
+        >
             <Container>
                 <div className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
                     <AverageSalaryCard />
-
-                    <article className="border-border bg-surface rounded-xl border p-8 shadow-sm">
-                        <div className="flex gap-4">
-                            <span className="bg-accent/20 text-success flex size-12 items-center justify-center rounded-lg">
-                                <HiCalendarDays className="size-6" />
-                            </span>
-                            <div>
-                                <h2 className="text-primary text-2xl font-bold">
-                                    Свята в Європі
-                                </h2>
-                                <p className="text-muted mt-1 text-sm">
-                                    Найближчі офіційні вихідні дні
-                                </p>
-                            </div>
-                        </div>
-                        <div className="mt-7 grid gap-3">
-                            {holidays.map(([country, date, title]) => (
-                                <div
-                                    className="border-border flex items-center justify-between gap-4 rounded-md border px-4 py-3 text-sm"
-                                    key={date}
-                                >
-                                    <span className="text-primary font-semibold">
-                                        {country} {date}
-                                    </span>
-                                    <span className="text-muted text-right">
-                                        {title}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    </article>
+                    <HolidaysCard />
                 </div>
             </Container>
         </Section>
@@ -904,11 +997,14 @@ function HomeInfoGrid() {
 
 function HomeCta({ onClick }: { onClick: () => void }) {
     return (
-        <Section className="pt-8 pb-12" spacing="none">
+        <Section
+            className="pt-8 pb-12"
+            spacing="none"
+        >
             <Container>
                 <div className="bg-primary text-surface grid gap-8 rounded-xl px-9 py-10 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
                     <div>
-                        <p className="text-xs font-bold tracking-[0.32em] uppercase text-white/70">
+                        <p className="text-xs font-bold tracking-[0.32em] text-white/70 uppercase">
                             Почни свій шлях вже сьогодні
                         </p>
                         <h2 className="mt-4 text-4xl font-bold">

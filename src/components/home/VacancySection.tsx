@@ -86,7 +86,6 @@ export function VacancySection({
     useEffect(() => {
         let shouldIgnore = false
 
-        // oxlint-disable-next-line react/set-state-in-effect
         void loadVacancies({
             isStale: () => shouldIgnore,
         })
@@ -98,7 +97,6 @@ export function VacancySection({
 
     useEffect(() => {
         const timeoutId = window.setTimeout(() => {
-            // oxlint-disable-next-line react/set-state-in-effect
             setDebouncedSearchQuery(searchQuery)
         }, 350)
 
