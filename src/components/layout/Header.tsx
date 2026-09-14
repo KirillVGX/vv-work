@@ -1,9 +1,9 @@
 import type { ComponentPropsWithoutRef } from 'react'
 import { useState } from 'react'
-import { HiBars3, HiChevronDown, HiGlobeAlt } from 'react-icons/hi2'
+import { HiBars3, HiGlobeAlt } from 'react-icons/hi2'
 import { Link, NavLink } from 'react-router'
 
-import { Container } from '@/components/ui'
+import { Container, FilterDropdown } from '@/components/ui'
 import { cn } from '@/components/ui/utils'
 import { routePaths } from '@/routePaths'
 
@@ -15,10 +15,16 @@ const navigationItems = [
     { label: 'Контакти', to: routePaths.contacts },
 ]
 
+const languageOptions = [
+    { label: 'UA', value: 'ua' },
+    { label: 'EN', value: 'en' },
+]
+
 type HeaderProps = ComponentPropsWithoutRef<'header'>
 
 export function Header({ className, ...props }: HeaderProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const [language, setLanguage] = useState('ua')
 
     return (
         <header
@@ -63,20 +69,20 @@ export function Header({ className, ...props }: HeaderProps) {
                     </nav>
 
                     <div className="hidden items-center gap-5 lg:flex">
-                        <button
-                            className="text-primary flex items-center gap-2 text-sm font-semibold"
-                            type="button"
-                        >
-                            <HiGlobeAlt
-                                aria-hidden="true"
-                                className="size-5"
-                            />
-                            UA
-                            <HiChevronDown
-                                aria-hidden="true"
-                                className="text-muted size-4"
-                            />
-                        </button>
+                        <FilterDropdown
+                            className="w-24"
+                            icon={
+                                <HiGlobeAlt
+                                    aria-hidden="true"
+                                    className="size-4"
+                                />
+                            }
+                            label="Мова"
+                            onChange={setLanguage}
+                            options={languageOptions}
+                            size="sm"
+                            value={language}
+                        />
                         <Link
                             className="bg-accent text-primary hover:bg-accent-hover focus-visible:outline-accent inline-flex h-11 items-center justify-center rounded-md px-8 text-base font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
                             to={routePaths.contacts}

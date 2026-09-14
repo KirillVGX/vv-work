@@ -3,10 +3,10 @@ import type { PointerEvent } from 'react'
 import type { IconType } from 'react-icons'
 import {
     HiArrowRight,
+    HiBanknotes,
     HiBriefcase,
     HiCalendarDays,
     HiChatBubbleLeftRight,
-    HiChevronDown,
     HiDocumentText,
     HiGlobeAlt,
     HiHome,
@@ -43,7 +43,7 @@ import {
     fetchUpcomingHolidays,
 } from '@/api'
 import { Hero } from '@/components/home'
-import { Container, ErrorBlock, Section } from '@/components/ui'
+import { Container, ErrorBlock, FilterDropdown, Section } from '@/components/ui'
 import { routePaths } from '@/routePaths'
 import type {
     AverageSalary,
@@ -788,6 +788,7 @@ function AverageSalaryCard() {
     }, [])
 
     useEffect(() => {
+        // oxlint-disable-next-line react/set-state-in-effect
         void loadSalary()
     }, [loadSalary])
 
@@ -823,28 +824,23 @@ function AverageSalaryCard() {
                         <div className="mt-8 h-14 w-48 animate-pulse rounded-md bg-slate-100" />
                     )}
                 </div>
-                <label className="border-border relative rounded-md border text-sm">
-                    <select
-                        className="text-primary cursor-pointer appearance-none rounded-md bg-transparent py-2 pr-8 pl-3 focus-visible:outline-none"
-                        onChange={(event) =>
-                            setCurrency(event.target.value as CurrencyCode)
-                        }
-                        value={currency}
-                    >
-                        {CURRENCY_OPTIONS.map((option) => (
-                            <option
-                                key={option.code}
-                                value={option.code}
-                            >
-                                {option.label}
-                            </option>
-                        ))}
-                    </select>
-                    <HiChevronDown
-                        aria-hidden="true"
-                        className="text-muted pointer-events-none absolute top-1/2 right-2.5 size-4 -translate-y-1/2"
-                    />
-                </label>
+                <FilterDropdown
+                    className="w-32 shrink-0"
+                    icon={
+                        <HiBanknotes
+                            aria-hidden="true"
+                            className="size-4"
+                        />
+                    }
+                    label="Валюта"
+                    onChange={(value) => setCurrency(value as CurrencyCode)}
+                    options={CURRENCY_OPTIONS.map((option) => ({
+                        label: option.label,
+                        value: option.code,
+                    }))}
+                    size="sm"
+                    value={currency}
+                />
             </div>
             {state.status === 'loading' && <SalaryChartSkeleton />}
             {state.status === 'error' && (
@@ -911,6 +907,7 @@ function HolidaysCard() {
     }, [])
 
     useEffect(() => {
+        // oxlint-disable-next-line react/set-state-in-effect
         void loadHolidays()
     }, [loadHolidays])
 
