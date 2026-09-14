@@ -1,16 +1,32 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { HiArrowRight, HiMagnifyingGlass } from 'react-icons/hi2'
-import { Link } from 'react-router'
+import { HiMagnifyingGlass } from 'react-icons/hi2'
 
 import { fetchVacancies } from '@/api'
-import { ErrorBlock } from '@/components/ui'
-import { routePaths } from '@/routePaths'
+import {
+    ErrorBlock,
+    Pagination,
+} from '@/components/ui'
 import type { CategoryKey, CountryKey, Vacancy } from '@/types'
 
+import { categories } from './homeData'
 import {
     VacancyGrid,
     VacancyGridSkeleton,
 } from './VacancyGrid'
+
+const VACANCIES_PER_PAGE = 32
+
+function getFiltersKey({
+    searchQuery,
+    selectedCategory,
+    selectedCountry,
+}: {
+    searchQuery: string
+    selectedCategory: CategoryKey | ''
+    selectedCountry: CountryKey | ''
+}) {
+    return `${selectedCategory}:${selectedCountry}:${searchQuery.trim().toLowerCase()}`
+}
 
 type VacanciesState =
     | {
@@ -36,6 +52,10 @@ export function VacancySection({
     selectedCountry,
     searchQuery,
 }: VacancySectionProps) {
+    const [pageState, setPageState] = useState({
+        currentPage: 1,
+        filtersKey: '',
+    })
     const [vacanciesState, setVacanciesState] = useState<VacanciesState>({
         status: 'loading',
     })
@@ -114,27 +134,72 @@ export function VacancySection({
         vacanciesState,
     ])
 
-    const displayedVacancies = useMemo(
-        () => visibleVacancies.slice(0, 4),
-        [visibleVacancies]
+    const filtersKey = getFiltersKey({
+        searchQuery: debouncedSearchQuery,
+        selectedCategory,
+        selectedCountry,
+    })
+    const currentPage =
+        pageState.filtersKey === filtersKey ? pageState.currentPage : 1
+    const totalPages = Math.ceil(visibleVacancies.length / VACANCIES_PER_PAGE)
+
+    const displayedVacancies = useMemo(() => {
+        const startIndex = (currentPage - 1) * VACANCIES_PER_PAGE
+
+        return visibleVacancies.slice(
+            startIndex,
+            startIndex + VACANCIES_PER_PAGE
+        )
+    }, [currentPage, visibleVacancies])
+
+    const selectedCategoryLabel = useMemo(
+        () =>
+            categories.find((category) => category.key === selectedCategory)
+                ?.label,
+        [selectedCategory]
+    )
+
+    const totalCount =
+        vacanciesState.status === 'success' ? visibleVacancies.length : null
+    const handlePageChange = useCallback(
+        (page: number) => {
+            setPageState({
+                currentPage: page,
+                filtersKey,
+            })
+
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+            })
+        },
+        [filtersKey]
     )
 
     return (
-        <div>
+        <div
+            id="vacancies"
+            className="scroll-mt-24"
+        >
             <div className="mb-6 flex items-center justify-between gap-4">
-                <h2 className="text-primary text-3xl font-bold">
-                    Актуальні вакансії
-                </h2>
-                <Link
-                    className="text-success hidden items-center gap-2 text-sm font-semibold md:flex"
-                    to={routePaths.contacts}
-                >
-                    Переглянути всі
-                    <HiArrowRight
-                        aria-hidden="true"
-                        className="size-4"
-                    />
-                </Link>
+                <div>
+                    <h2 className="text-primary text-3xl font-bold">
+                        Актуальні вакансії
+                    </h2>
+                    {selectedCategoryLabel && (
+                        <p className="text-muted mt-2 text-sm">
+                            Активний фільтр:{' '}
+                            <span className="text-primary font-semibold">
+                                {selectedCategoryLabel}
+                            </span>
+                        </p>
+                    )}
+                </div>
+                {totalCount !== null && (
+                    <p className="text-muted shrink-0 text-sm font-semibold">
+                        Усього {totalCount} вакансій
+                    </p>
+                )}
             </div>
 
             {vacanciesState.status === 'loading' && <VacancyGridSkeleton />}
@@ -152,7 +217,14 @@ export function VacancySection({
             {vacanciesState.status === 'success' &&
                 visibleVacancies.length === 0 && <VacancyEmptyState />}
             {vacanciesState.status === 'success' && visibleVacancies.length > 0 && (
-                <VacancyGrid vacancies={displayedVacancies} />
+                <>
+                    <VacancyGrid vacancies={displayedVacancies} />
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                    />
+                </>
             )}
         </div>
     )

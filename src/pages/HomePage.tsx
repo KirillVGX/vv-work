@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { Hero, VacancySection } from '@/components/home'
 import { Container, Section } from '@/components/ui'
@@ -11,6 +11,18 @@ export function HomePage() {
     const [selectedCountry, setSelectedCountry] = useState<CountryKey | ''>('')
     const [searchQuery, setSearchQuery] = useState('')
 
+    const handleCategoryChange = useCallback((category: CategoryKey | '') => {
+        setSelectedCategory(category)
+
+        if (category) {
+            window.requestAnimationFrame(() => {
+                document
+                    .getElementById('vacancies')
+                    ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            })
+        }
+    }, [])
+
     return (
         <>
             <Section
@@ -22,7 +34,7 @@ export function HomePage() {
                         selectedCategory={selectedCategory}
                         selectedCountry={selectedCountry}
                         searchQuery={searchQuery}
-                        onCategoryChange={setSelectedCategory}
+                        onCategoryChange={handleCategoryChange}
                         onCountryChange={setSelectedCountry}
                         onSearchQueryChange={setSearchQuery}
                     />
