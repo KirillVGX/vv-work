@@ -1,3 +1,5 @@
+import { memo } from 'react'
+
 import { cn } from '@/components/ui/utils'
 import type { Category, CategoryKey } from '@/types'
 
@@ -7,7 +9,7 @@ type CategoryChipsProps = {
     onCategoryChange: (category: CategoryKey | '') => void
 }
 
-export function CategoryChips({
+export const CategoryChips = memo(function CategoryChips({
     categories,
     selectedCategory,
     onCategoryChange,
@@ -42,4 +44,4 @@ export function CategoryChips({
             </div>
         </div>
     )
-}
+})

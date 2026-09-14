@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { HiBriefcase, HiMagnifyingGlass, HiMapPin } from 'react-icons/hi2'
 import { Link } from 'react-router'
 
@@ -29,6 +29,16 @@ export function SearchBar({
     onCountryChange,
     onSearchQueryChange,
 }: SearchBarProps) {
+    const handleCountryChange = useCallback(
+        (value: string) => onCountryChange(value as CountryKey | ''),
+        [onCountryChange]
+    )
+
+    const handleCategoryChange = useCallback(
+        (value: string) => onCategoryChange(value as CategoryKey | ''),
+        [onCategoryChange]
+    )
+
     const countryOptions = useMemo(
         () => [
             { label: 'Усі країни', value: '' },
@@ -74,7 +84,7 @@ export function SearchBar({
                     label="Країна"
                     value={selectedCountry}
                     options={countryOptions}
-                    onChange={(value) => onCountryChange(value as CountryKey | '')}
+                    onChange={handleCountryChange}
                 />
             </div>
             <div className="border-border border-t lg:border-t-0 lg:border-l">
@@ -88,7 +98,7 @@ export function SearchBar({
                     label="Категорія"
                     value={selectedCategory}
                     options={categoryOptions}
-                    onChange={(value) => onCategoryChange(value as CategoryKey | '')}
+                    onChange={handleCategoryChange}
                 />
             </div>
 

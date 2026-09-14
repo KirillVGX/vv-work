@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { HiArrowRight } from 'react-icons/hi2'
+import { HiArrowRight, HiMagnifyingGlass } from 'react-icons/hi2'
 import { Link } from 'react-router'
 
 import { fetchVacancies } from '@/api'
@@ -114,6 +114,11 @@ export function VacancySection({
         vacanciesState,
     ])
 
+    const displayedVacancies = useMemo(
+        () => visibleVacancies.slice(0, 4),
+        [visibleVacancies]
+    )
+
     return (
         <div>
             <div className="mb-6 flex items-center justify-between gap-4">
@@ -144,9 +149,31 @@ export function VacancySection({
                     }
                 />
             )}
-            {vacanciesState.status === 'success' && (
-                <VacancyGrid vacancies={visibleVacancies.slice(0, 4)} />
+            {vacanciesState.status === 'success' &&
+                visibleVacancies.length === 0 && <VacancyEmptyState />}
+            {vacanciesState.status === 'success' && visibleVacancies.length > 0 && (
+                <VacancyGrid vacancies={displayedVacancies} />
             )}
+        </div>
+    )
+}
+
+function VacancyEmptyState() {
+    return (
+        <div className="border-border bg-surface flex min-h-[14.25rem] flex-col items-start justify-center rounded-md border p-6">
+            <span className="bg-accent/25 text-success flex size-11 items-center justify-center rounded-md">
+                <HiMagnifyingGlass
+                    aria-hidden="true"
+                    className="size-5"
+                />
+            </span>
+            <h3 className="text-primary mt-4 text-xl font-bold">
+                Вакансії не знайдено
+            </h3>
+            <p className="text-muted mt-2 max-w-xl text-sm leading-6">
+                Спробуйте змінити запит, країну або категорію, щоб побачити
+                більше пропозицій.
+            </p>
         </div>
     )
 }

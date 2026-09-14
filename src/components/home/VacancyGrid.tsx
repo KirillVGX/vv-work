@@ -1,3 +1,5 @@
+import { memo } from 'react'
+
 import type { Vacancy } from '@/types/domain'
 
 import { VacancyCard } from './VacancyCard'
@@ -7,7 +9,9 @@ type VacancyGridProps = {
     vacancies: Vacancy[]
 }
 
-export function VacancyGrid({ vacancies }: VacancyGridProps) {
+export const VacancyGrid = memo(function VacancyGrid({
+    vacancies,
+}: VacancyGridProps) {
     return (
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
             {vacancies.map((vacancy) => (
@@ -18,7 +22,7 @@ export function VacancyGrid({ vacancies }: VacancyGridProps) {
             ))}
         </div>
     )
-}
+})
 
 export function VacancyGridSkeleton({ count = 4 }: { count?: number }) {
     return (

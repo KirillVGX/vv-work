@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import {
     HiArrowRight,
     HiBookmark,
@@ -23,7 +24,9 @@ const logoToneClasses: Record<Vacancy['logoTone'], string> = {
     lime: 'bg-accent/25 text-success',
 }
 
-export function VacancyCard({ vacancy }: VacancyCardProps) {
+export const VacancyCard = memo(function VacancyCard({
+    vacancy,
+}: VacancyCardProps) {
     const titleId = `vacancy-${vacancy.id}-title`
 
     return (
@@ -116,4 +119,4 @@ export function VacancyCard({ vacancy }: VacancyCardProps) {
             </div>
         </article>
     )
-}
+})
