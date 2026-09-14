@@ -4,6 +4,7 @@ import { AppLayout } from '@/components/layout'
 import { ContactsPage } from '@/pages/ContactsPage'
 import { HomePage } from '@/pages/HomePage'
 import { PartnerPage } from '@/pages/PartnerPage'
+import { VacanciesPage } from '@/pages/VacanciesPage'
 import { routePaths } from '@/routePaths'
 
 export const router = createBrowserRouter([
@@ -13,6 +14,10 @@ export const router = createBrowserRouter([
             {
                 path: routePaths.home,
                 element: <HomePage />,
+            },
+            {
+                path: routePaths.vacancies,
+                element: <VacanciesPage />,
             },
             {
                 path: routePaths.partner,
