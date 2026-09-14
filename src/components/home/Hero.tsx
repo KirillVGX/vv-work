@@ -30,7 +30,8 @@ export function Hero({
             <h1 className="text-primary mt-5 max-w-[54rem] text-5xl leading-[1.08] font-bold md:text-[4rem]">
                 Знайди роботу,
                 <br />
-                яка підходить <span className="hero-highlight">саме тобі.</span>
+                яка підходить{' '}
+                <span className="hero-highlight">саме тобі.</span>
             </h1>
 
             <p className="text-muted mt-4 max-w-[42rem] text-lg leading-8">
