@@ -2,10 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { HiBriefcase, HiMagnifyingGlass, HiMapPin } from 'react-icons/hi2'
 import { Link } from 'react-router'
 
-import {
-    FilterDropdown,
-    type FilterDropdownOption,
-} from '@/components/ui'
+import { FilterDropdown, type FilterDropdownOption } from '@/components/ui'
 import { routePaths } from '@/routePaths'
 import type { CategoryKey, CountryKey } from '@/types'
 
@@ -29,6 +26,28 @@ export function SearchBar({
     onCountryChange,
     onSearchQueryChange,
 }: SearchBarProps) {
+    const vacanciesSearchParams = useMemo(() => {
+        const params = new URLSearchParams()
+
+        if (searchQuery.trim()) {
+            params.set('query', searchQuery.trim())
+        }
+
+        if (selectedCountry) {
+            params.set('country', selectedCountry)
+        }
+
+        if (selectedCategory) {
+            params.set('category', selectedCategory)
+        }
+
+        const queryString = params.toString()
+
+        return queryString
+            ? `${routePaths.vacancies}?${queryString}`
+            : routePaths.vacancies
+    }, [searchQuery, selectedCategory, selectedCountry])
+
     const handleCountryChange = useCallback(
         (value: string) => onCountryChange(value as CountryKey | ''),
         [onCountryChange]
@@ -40,10 +59,7 @@ export function SearchBar({
     )
 
     const countryOptions = useMemo(
-        () => [
-            { label: 'Усі країни', value: '' },
-            ...countries,
-        ],
+        () => [{ label: 'Усі країни', value: '' }, ...countries],
         []
     )
 
@@ -104,12 +120,9 @@ export function SearchBar({
 
             <Link
                 className="bg-accent text-primary hover:bg-accent-hover focus-visible:outline-accent m-1 inline-flex h-12 items-center justify-center gap-3 rounded-md px-5 text-base font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
-                to={routePaths.contacts}
+                to={vacanciesSearchParams}
             >
-                <HiMagnifyingGlass
-                    aria-hidden="true"
-                    className="size-6"
-                />
+                <HiMagnifyingGlass aria-hidden="true" className="size-6" />
                 Знайти вакансії
             </Link>
         </div>

@@ -2,17 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { HiMagnifyingGlass } from 'react-icons/hi2'
 
 import { fetchVacancies } from '@/api'
-import {
-    ErrorBlock,
-    Pagination,
-} from '@/components/ui'
+import { ErrorBlock, Pagination } from '@/components/ui'
 import type { CategoryKey, CountryKey, Vacancy } from '@/types'
 
 import { categories } from './homeData'
-import {
-    VacancyGrid,
-    VacancyGridSkeleton,
-} from './VacancyGrid'
+import { VacancyGrid, VacancyGridSkeleton } from './VacancyGrid'
 
 const VACANCIES_PER_PAGE = 32
 
@@ -104,6 +98,7 @@ export function VacancySection({
 
     useEffect(() => {
         const timeoutId = window.setTimeout(() => {
+            // oxlint-disable-next-line react/set-state-in-effect
             setDebouncedSearchQuery(searchQuery)
         }, 350)
 
@@ -161,6 +156,7 @@ export function VacancySection({
 
     const totalCount =
         vacanciesState.status === 'success' ? visibleVacancies.length : null
+
     const handlePageChange = useCallback(
         (page: number) => {
             setPageState({
@@ -177,10 +173,7 @@ export function VacancySection({
     )
 
     return (
-        <div
-            id="vacancies"
-            className="scroll-mt-24"
-        >
+        <div id="vacancies" className="scroll-mt-24">
             <div className="mb-6 flex items-center justify-between gap-4">
                 <div>
                     <h2 className="text-primary text-3xl font-bold">
@@ -234,10 +227,7 @@ function VacancyEmptyState() {
     return (
         <div className="border-border bg-surface flex min-h-[14.25rem] flex-col items-start justify-center rounded-md border p-6">
             <span className="bg-accent/25 text-success flex size-11 items-center justify-center rounded-md">
-                <HiMagnifyingGlass
-                    aria-hidden="true"
-                    className="size-5"
-                />
+                <HiMagnifyingGlass aria-hidden="true" className="size-5" />
             </span>
             <h3 className="text-primary mt-4 text-xl font-bold">
                 Вакансії не знайдено
