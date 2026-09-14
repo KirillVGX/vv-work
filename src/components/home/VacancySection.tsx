@@ -28,15 +28,18 @@ type VacanciesState =
 type VacancySectionProps = {
     selectedCategory: CategoryKey | ''
     selectedCountry: CountryKey | ''
+    searchQuery: string
 }
 
 export function VacancySection({
     selectedCategory,
     selectedCountry,
+    searchQuery,
 }: VacancySectionProps) {
     const [vacanciesState, setVacanciesState] = useState<VacanciesState>({
         status: 'loading',
     })
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery)
 
     const loadVacancies = useCallback(async (options?: {
         isStale?: () => boolean
@@ -79,18 +82,37 @@ export function VacancySection({
         }
     }, [loadVacancies])
 
+    useEffect(() => {
+        const timeoutId = window.setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery)
+        }, 350)
+
+        return () => {
+            window.clearTimeout(timeoutId)
+        }
+    }, [searchQuery])
+
     const visibleVacancies = useMemo(() => {
         if (vacanciesState.status !== 'success') {
             return []
         }
 
+        const normalizedSearchQuery = debouncedSearchQuery.trim().toLowerCase()
+
         return vacanciesState.vacancies.filter(
             (vacancy) =>
                 (!selectedCategory ||
                     vacancy.categoryKey === selectedCategory) &&
-                (!selectedCountry || vacancy.countryKey === selectedCountry)
+                (!selectedCountry || vacancy.countryKey === selectedCountry) &&
+                (!normalizedSearchQuery ||
+                    vacancy.title.toLowerCase().includes(normalizedSearchQuery))
         )
-    }, [selectedCategory, selectedCountry, vacanciesState])
+    }, [
+        debouncedSearchQuery,
+        selectedCategory,
+        selectedCountry,
+        vacanciesState,
+    ])
 
     return (
         <div>

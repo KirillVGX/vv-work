@@ -9,6 +9,7 @@ export function HomePage() {
         ''
     )
     const [selectedCountry, setSelectedCountry] = useState<CountryKey | ''>('')
+    const [searchQuery, setSearchQuery] = useState('')
 
     return (
         <>
@@ -20,8 +21,10 @@ export function HomePage() {
                     <Hero
                         selectedCategory={selectedCategory}
                         selectedCountry={selectedCountry}
+                        searchQuery={searchQuery}
                         onCategoryChange={setSelectedCategory}
                         onCountryChange={setSelectedCountry}
+                        onSearchQueryChange={setSearchQuery}
                     />
                 </Container>
             </Section>
@@ -34,6 +37,7 @@ export function HomePage() {
                     <VacancySection
                         selectedCategory={selectedCategory}
                         selectedCountry={selectedCountry}
+                        searchQuery={searchQuery}
                     />
                 </Container>
             </Section>

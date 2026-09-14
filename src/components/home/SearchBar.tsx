@@ -15,15 +15,19 @@ import { SearchField } from './SearchField'
 type SearchBarProps = {
     selectedCategory: CategoryKey | ''
     selectedCountry: CountryKey | ''
+    searchQuery: string
     onCategoryChange: (category: CategoryKey | '') => void
     onCountryChange: (country: CountryKey | '') => void
+    onSearchQueryChange: (query: string) => void
 }
 
 export function SearchBar({
     selectedCategory,
     selectedCountry,
+    searchQuery,
     onCategoryChange,
     onCountryChange,
+    onSearchQueryChange,
 }: SearchBarProps) {
     const countryOptions = useMemo(
         () => [
@@ -55,6 +59,8 @@ export function SearchBar({
                         />
                     }
                     label="Яку роботу ви шукаєте?"
+                    value={searchQuery}
+                    onChange={onSearchQueryChange}
                 />
             </div>
             <div className="border-border border-t lg:border-t-0 lg:border-l">

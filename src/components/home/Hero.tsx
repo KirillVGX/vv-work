@@ -7,15 +7,19 @@ import { SearchBar } from './SearchBar'
 type HeroProps = {
     selectedCategory: CategoryKey | ''
     selectedCountry: CountryKey | ''
+    searchQuery: string
     onCategoryChange: (category: CategoryKey | '') => void
     onCountryChange: (country: CountryKey | '') => void
+    onSearchQueryChange: (query: string) => void
 }
 
 export function Hero({
     selectedCategory,
     selectedCountry,
+    searchQuery,
     onCategoryChange,
     onCountryChange,
+    onSearchQueryChange,
 }: HeroProps) {
     return (
         <div>
@@ -38,8 +42,10 @@ export function Hero({
             <SearchBar
                 selectedCategory={selectedCategory}
                 selectedCountry={selectedCountry}
+                searchQuery={searchQuery}
                 onCategoryChange={onCategoryChange}
                 onCountryChange={onCountryChange}
+                onSearchQueryChange={onSearchQueryChange}
             />
             <CategoryChips
                 categories={categories}
