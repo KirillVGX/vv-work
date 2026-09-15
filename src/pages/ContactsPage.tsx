@@ -1,6 +1,29 @@
+import { useState } from 'react'
+import type { FormEvent } from 'react'
 import { HiClock, HiEnvelope, HiMapPin, HiPhone } from 'react-icons/hi2'
 
 import { Button, Container, Input, Section } from '@/components/ui'
+import { cn } from '@/components/ui/utils'
+
+type ApplicationFormValues = {
+    name: string
+    email: string
+    contact: string
+    subject: string
+    message: string
+}
+
+type ApplicationFormErrors = Partial<
+    Record<keyof ApplicationFormValues, string>
+>
+
+const initialFormValues: ApplicationFormValues = {
+    name: '',
+    email: '',
+    contact: '',
+    subject: '',
+    message: '',
+}
 
 const contactItems = [
     {
@@ -29,7 +52,68 @@ const contactItems = [
     },
 ]
 
+function isValidPhoneOrTelegram(value: string) {
+    const trimmedValue = value.trim()
+    const phonePattern = /^\+?[0-9\s()-]{7,20}$/
+    const telegramPattern = /^@?[A-Za-z0-9_]{5,32}$/
+
+    return phonePattern.test(trimmedValue) || telegramPattern.test(trimmedValue)
+}
+
+function validateApplicationForm(values: ApplicationFormValues) {
+    const errors: ApplicationFormErrors = {}
+
+    if (values.name.trim().length < 2) {
+        errors.name = 'Вкажіть імʼя мінімум з 2 символів.'
+    }
+
+    if (!isValidPhoneOrTelegram(values.contact)) {
+        errors.contact = 'Вкажіть коректний телефон або Telegram.'
+    }
+
+    if (values.message.length > 500) {
+        errors.message = 'Повідомлення має містити не більше 500 символів.'
+    }
+
+    return errors
+}
+
+function FieldError({ id, message }: { id: string; message?: string }) {
+    if (!message) {
+        return null
+    }
+
+    return (
+        <span
+            className="text-error text-xs font-medium"
+            id={id}
+        >
+            {message}
+        </span>
+    )
+}
+
 export function ContactsPage() {
+    const [formValues, setFormValues] =
+        useState<ApplicationFormValues>(initialFormValues)
+    const [formErrors, setFormErrors] = useState<ApplicationFormErrors>({})
+
+    function updateField(field: keyof ApplicationFormValues, value: string) {
+        setFormValues((currentValues) => ({
+            ...currentValues,
+            [field]: value,
+        }))
+        setFormErrors((currentErrors) => ({
+            ...currentErrors,
+            [field]: undefined,
+        }))
+    }
+
+    function handleSubmit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault()
+        setFormErrors(validateApplicationForm(formValues))
+    }
+
     return (
         <Section spacing="lg">
             <Container>
@@ -81,7 +165,10 @@ export function ContactsPage() {
                         </div>
                     </div>
 
-                    <form className="border-border bg-surface rounded-md border p-5 md:p-6">
+                    <form
+                        className="border-border bg-surface rounded-md border p-5 md:p-6"
+                        onSubmit={handleSubmit}
+                    >
                         <div>
                             <p className="text-primary text-2xl font-bold">
                                 Залишити заявку
@@ -96,39 +183,103 @@ export function ContactsPage() {
                             <label className="text-primary grid gap-2 text-sm font-semibold">
                                 Імʼя
                                 <Input
+                                    aria-describedby={
+                                        formErrors.name
+                                            ? 'application-name-error'
+                                            : undefined
+                                    }
+                                    error={Boolean(formErrors.name)}
                                     name="name"
+                                    onChange={(event) =>
+                                        updateField('name', event.target.value)
+                                    }
                                     placeholder="Ваше імʼя"
+                                    value={formValues.name}
+                                />
+                                <FieldError
+                                    id="application-name-error"
+                                    message={formErrors.name}
                                 />
                             </label>
                             <label className="text-primary grid gap-2 text-sm font-semibold">
                                 Email
                                 <Input
                                     name="email"
+                                    onChange={(event) =>
+                                        updateField('email', event.target.value)
+                                    }
                                     placeholder="name@example.com"
                                     type="email"
+                                    value={formValues.email}
                                 />
                             </label>
                             <label className="text-primary grid gap-2 text-sm font-semibold">
-                                Телефон
+                                Телефон / Telegram
                                 <Input
-                                    name="phone"
-                                    placeholder="+380"
-                                    type="tel"
+                                    aria-describedby={
+                                        formErrors.contact
+                                            ? 'application-contact-error'
+                                            : undefined
+                                    }
+                                    error={Boolean(formErrors.contact)}
+                                    name="contact"
+                                    onChange={(event) =>
+                                        updateField(
+                                            'contact',
+                                            event.target.value
+                                        )
+                                    }
+                                    placeholder="+380 або @username"
+                                    type="text"
+                                    value={formValues.contact}
+                                />
+                                <FieldError
+                                    id="application-contact-error"
+                                    message={formErrors.contact}
                                 />
                             </label>
                             <label className="text-primary grid gap-2 text-sm font-semibold">
                                 Тема звернення
                                 <Input
                                     name="subject"
+                                    onChange={(event) =>
+                                        updateField(
+                                            'subject',
+                                            event.target.value
+                                        )
+                                    }
                                     placeholder="Пошук роботи"
+                                    value={formValues.subject}
                                 />
                             </label>
                             <label className="text-primary grid gap-2 text-sm font-semibold md:col-span-2">
                                 Повідомлення
                                 <textarea
-                                    className="border-border bg-surface text-text placeholder:text-muted hover:border-primary focus:border-primary focus:ring-accent min-h-32 w-full resize-y rounded-md border px-4 py-3 text-base transition-colors focus:ring-2 focus:outline-none"
+                                    aria-describedby={
+                                        formErrors.message
+                                            ? 'application-message-error'
+                                            : undefined
+                                    }
+                                    aria-invalid={
+                                        formErrors.message ? true : undefined
+                                    }
+                                    className={cn(
+                                        'border-border bg-surface text-text placeholder:text-muted hover:border-primary focus:border-primary focus:ring-accent min-h-32 w-full resize-y rounded-md border px-4 py-3 text-base transition-colors focus:ring-2 focus:outline-none',
+                                        formErrors.message && 'border-error'
+                                    )}
                                     name="message"
+                                    onChange={(event) =>
+                                        updateField(
+                                            'message',
+                                            event.target.value
+                                        )
+                                    }
                                     placeholder="Розкажіть, чим можемо допомогти"
+                                    value={formValues.message}
+                                />
+                                <FieldError
+                                    id="application-message-error"
+                                    message={formErrors.message}
                                 />
                             </label>
                         </div>
@@ -137,6 +288,7 @@ export function ContactsPage() {
                             className="mt-6"
                             fullWidth
                             size="lg"
+                            type="submit"
                         >
                             Надіслати
                         </Button>
