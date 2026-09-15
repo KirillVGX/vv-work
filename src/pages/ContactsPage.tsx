@@ -20,7 +20,6 @@ type ApplicationFormErrors = Partial<
 
 type ApplicationSubmitState =
     | { status: 'idle' }
-    | { status: 'submitting' }
     | { status: 'success'; message: string; isPending?: boolean }
     | { status: 'error'; message: string }
 
@@ -147,6 +146,8 @@ export function ContactsPage() {
         })
 
         if (response.ok) {
+            setFormValues(initialFormValues)
+            setFormErrors({})
             setSubmitState({
                 status: 'success',
                 message:
@@ -162,8 +163,12 @@ export function ContactsPage() {
     }
 
     const isSubmissionPending =
-        submitState.status === 'submitting' ||
-        (submitState.status === 'success' && submitState.isPending)
+        submitState.status === 'success' && submitState.isPending
+    const submitButtonLabel = isSubmissionPending
+        ? 'Надсилання...'
+        : submitState.status === 'error'
+          ? 'Повторити відправку'
+          : 'Надіслати'
 
     return (
         <Section spacing="lg">
@@ -240,6 +245,7 @@ export function ContactsPage() {
                                             : undefined
                                     }
                                     error={Boolean(formErrors.name)}
+                                    disabled={isSubmissionPending}
                                     name="name"
                                     onChange={(event) =>
                                         updateField('name', event.target.value)
@@ -255,6 +261,7 @@ export function ContactsPage() {
                             <label className="text-primary grid gap-2 text-sm font-semibold">
                                 Email
                                 <Input
+                                    disabled={isSubmissionPending}
                                     name="email"
                                     onChange={(event) =>
                                         updateField('email', event.target.value)
@@ -273,6 +280,7 @@ export function ContactsPage() {
                                             : undefined
                                     }
                                     error={Boolean(formErrors.contact)}
+                                    disabled={isSubmissionPending}
                                     name="contact"
                                     onChange={(event) =>
                                         updateField(
@@ -292,6 +300,7 @@ export function ContactsPage() {
                             <label className="text-primary grid gap-2 text-sm font-semibold">
                                 Тема звернення
                                 <Input
+                                    disabled={isSubmissionPending}
                                     name="subject"
                                     onChange={(event) =>
                                         updateField(
@@ -315,11 +324,12 @@ export function ContactsPage() {
                                         formErrors.message ? true : undefined
                                     }
                                     className={cn(
-                                        'bg-surface text-text placeholder:text-muted hover:border-primary min-h-32 w-full resize-y rounded-md border px-4 py-3 text-base transition-colors focus:ring-2 focus:outline-none',
+                                        'bg-surface text-text placeholder:text-muted hover:border-primary disabled:bg-border/35 disabled:text-muted min-h-32 w-full resize-y rounded-md border px-4 py-3 text-base transition-colors focus:ring-2 focus:outline-none disabled:cursor-not-allowed',
                                         formErrors.message
                                             ? 'border-error focus:border-error focus:ring-error/25'
                                             : 'border-border focus:border-primary focus:ring-accent'
                                     )}
+                                    disabled={isSubmissionPending}
                                     name="message"
                                     onChange={(event) =>
                                         updateField(
@@ -344,9 +354,7 @@ export function ContactsPage() {
                             size="lg"
                             type="submit"
                         >
-                            {isSubmissionPending
-                                ? 'Надсилання...'
-                                : 'Надіслати'}
+                            {submitButtonLabel}
                         </Button>
                         {(submitState.status === 'success' ||
                             submitState.status === 'error') && (
