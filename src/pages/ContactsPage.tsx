@@ -87,6 +87,7 @@ function FieldError({ id, message }: { id: string; message?: string }) {
         <span
             className="text-error text-xs font-medium"
             id={id}
+            role="alert"
         >
             {message}
         </span>
@@ -264,8 +265,10 @@ export function ContactsPage() {
                                         formErrors.message ? true : undefined
                                     }
                                     className={cn(
-                                        'border-border bg-surface text-text placeholder:text-muted hover:border-primary focus:border-primary focus:ring-accent min-h-32 w-full resize-y rounded-md border px-4 py-3 text-base transition-colors focus:ring-2 focus:outline-none',
-                                        formErrors.message && 'border-error'
+                                        'bg-surface text-text placeholder:text-muted hover:border-primary min-h-32 w-full resize-y rounded-md border px-4 py-3 text-base transition-colors focus:ring-2 focus:outline-none',
+                                        formErrors.message
+                                            ? 'border-error focus:border-error focus:ring-error/25'
+                                            : 'border-border focus:border-primary focus:ring-accent'
                                     )}
                                     name="message"
                                     onChange={(event) =>

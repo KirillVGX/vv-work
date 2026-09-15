@@ -10,12 +10,13 @@ export function Input({ className, error = false, ...props }: InputProps) {
     return (
         <input
             className={cn(
-                'h-11 w-full rounded-md border bg-surface px-4 text-base text-text transition-colors duration-150',
+                'bg-surface text-text h-11 w-full rounded-md border px-4 text-base transition-colors duration-150',
                 'placeholder:text-muted',
                 'hover:border-primary',
-                'focus:border-primary focus:outline-none focus:ring-2 focus:ring-accent',
-                'disabled:cursor-not-allowed disabled:bg-border/35 disabled:text-muted',
-                error ? 'border-error' : 'border-border',
+                'disabled:bg-border/35 disabled:text-muted disabled:cursor-not-allowed',
+                error
+                    ? 'border-error focus:border-error focus:ring-error/25 focus:ring-2 focus:outline-none'
+                    : 'border-border focus:border-primary focus:ring-accent focus:ring-2 focus:outline-none',
                 className
             )}
             aria-invalid={error || props['aria-invalid']}
