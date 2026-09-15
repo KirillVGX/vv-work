@@ -15,6 +15,8 @@ export type {
     ApiFailure,
     ApiResponse,
     ApiSuccess,
+    ApplicationSubmissionRequest,
+    ApplicationSubmissionResponse,
     AverageSalaryResponse,
     CategoriesResponse,
     CountriesResponse,

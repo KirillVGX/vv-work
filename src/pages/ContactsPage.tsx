@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { HiClock, HiEnvelope, HiMapPin, HiPhone } from 'react-icons/hi2'
 
+import { submitApplication } from '@/api'
 import { Button, Container, Input, Section } from '@/components/ui'
 import { cn } from '@/components/ui/utils'
 
@@ -16,6 +17,12 @@ type ApplicationFormValues = {
 type ApplicationFormErrors = Partial<
     Record<keyof ApplicationFormValues, string>
 >
+
+type ApplicationSubmitState =
+    | { status: 'idle' }
+    | { status: 'submitting' }
+    | { status: 'success'; message: string }
+    | { status: 'error'; message: string }
 
 const initialFormValues: ApplicationFormValues = {
     name: '',
@@ -98,6 +105,9 @@ export function ContactsPage() {
     const [formValues, setFormValues] =
         useState<ApplicationFormValues>(initialFormValues)
     const [formErrors, setFormErrors] = useState<ApplicationFormErrors>({})
+    const [submitState, setSubmitState] = useState<ApplicationSubmitState>({
+        status: 'idle',
+    })
 
     function updateField(field: keyof ApplicationFormValues, value: string) {
         setFormValues((currentValues) => ({
@@ -108,11 +118,43 @@ export function ContactsPage() {
             ...currentErrors,
             [field]: undefined,
         }))
+        setSubmitState({ status: 'idle' })
     }
 
-    function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
-        setFormErrors(validateApplicationForm(formValues))
+
+        const nextErrors = validateApplicationForm(formValues)
+        setFormErrors(nextErrors)
+
+        if (Object.keys(nextErrors).length > 0) {
+            setSubmitState({ status: 'idle' })
+            return
+        }
+
+        setSubmitState({ status: 'submitting' })
+
+        const response = await submitApplication({
+            name: formValues.name.trim(),
+            email: formValues.email.trim(),
+            contact: formValues.contact.trim(),
+            subject: formValues.subject.trim(),
+            message: formValues.message.trim(),
+        })
+
+        if (response.ok) {
+            setSubmitState({
+                status: 'success',
+                message:
+                    'Заявку надіслано. Ми звʼяжемося з вами найближчим часом.',
+            })
+            return
+        }
+
+        setSubmitState({
+            status: 'error',
+            message: response.error.message,
+        })
     }
 
     return (
@@ -289,12 +331,29 @@ export function ContactsPage() {
 
                         <Button
                             className="mt-6"
+                            disabled={submitState.status === 'submitting'}
                             fullWidth
                             size="lg"
                             type="submit"
                         >
-                            Надіслати
+                            {submitState.status === 'submitting'
+                                ? 'Надсилання...'
+                                : 'Надіслати'}
                         </Button>
+                        {(submitState.status === 'success' ||
+                            submitState.status === 'error') && (
+                            <p
+                                className={cn(
+                                    'mt-4 text-sm font-semibold',
+                                    submitState.status === 'success'
+                                        ? 'text-success'
+                                        : 'text-error'
+                                )}
+                                role="status"
+                            >
+                                {submitState.message}
+                            </p>
+                        )}
                     </form>
                 </div>
             </Container>

@@ -31,3 +31,16 @@ export type VacancyResponse = Vacancy
 export type AverageSalaryResponse = AverageSalary
 export type ExchangeRatesResponse = ExchangeRates
 export type HolidaysResponse = Holiday[]
+
+export type ApplicationSubmissionRequest = {
+    name: string
+    email: string
+    contact: string
+    subject: string
+    message: string
+}
+
+export type ApplicationSubmissionResponse = {
+    id: string
+    submittedAt: string
+}
