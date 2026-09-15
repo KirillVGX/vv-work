@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { HiMagnifyingGlass } from 'react-icons/hi2'
 
 import { fetchVacancies } from '@/api'
 import { ErrorBlock, Pagination } from '@/components/ui'
 import { useApiResource } from '@/hooks/useApiResource'
+import { useDebouncedValue } from '@/hooks/useDebouncedValue'
 import type { CategoryKey, CountryKey } from '@/types'
 
 import { categories } from '@/data/homeData'
@@ -12,6 +13,7 @@ import {
     getFiltersKey,
     getPaginatedVacancies,
     getTotalVacancyPages,
+    VACANCY_SEARCH_DEBOUNCE_MS,
 } from './vacancySectionUtils'
 import { VacancyGrid, VacancyGridSkeleton } from './VacancyGrid'
 
@@ -30,20 +32,12 @@ export function VacancySection({
         currentPage: 1,
         filtersKey: '',
     })
-    const [debouncedSearchQuery, setDebouncedSearchQuery] =
-        useState(searchQuery)
+    const debouncedSearchQuery = useDebouncedValue(
+        searchQuery,
+        VACANCY_SEARCH_DEBOUNCE_MS
+    )
     const { load: loadVacancies, state: vacanciesState } =
         useApiResource(fetchVacancies)
-
-    useEffect(() => {
-        const timeoutId = window.setTimeout(() => {
-            setDebouncedSearchQuery(searchQuery)
-        }, 350)
-
-        return () => {
-            window.clearTimeout(timeoutId)
-        }
-    }, [searchQuery])
 
     const visibleVacancies = useMemo(() => {
         if (vacanciesState.status !== 'success') {

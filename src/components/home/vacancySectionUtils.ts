@@ -1,6 +1,7 @@
 import type { CategoryKey, CountryKey, Vacancy } from '@/types'
 
 export const VACANCIES_PER_PAGE = 32
+export const VACANCY_SEARCH_DEBOUNCE_MS = 350
 
 export function getFiltersKey({
     searchQuery,
