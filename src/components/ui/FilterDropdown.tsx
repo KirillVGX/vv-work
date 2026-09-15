@@ -4,22 +4,22 @@ import { HiCheck, HiChevronDown } from 'react-icons/hi2'
 
 import { cn } from './utils'
 
-export type FilterDropdownOption = {
+export type FilterDropdownOption<TValue extends string = string> = {
     label: string
-    value: string
+    value: TValue
 }
 
-type FilterDropdownProps = {
+type FilterDropdownProps<TValue extends string = string> = {
     label: string
-    value: string
-    options: FilterDropdownOption[]
-    onChange: (value: string) => void
+    value: TValue
+    options: FilterDropdownOption<TValue>[]
+    onChange: (value: TValue) => void
     icon: ReactNode
     className?: string
     size?: 'md' | 'sm'
 }
 
-export function FilterDropdown({
+export function FilterDropdown<TValue extends string = string>({
     label,
     value,
     options,
@@ -27,7 +27,7 @@ export function FilterDropdown({
     icon,
     className,
     size = 'md',
-}: FilterDropdownProps) {
+}: FilterDropdownProps<TValue>) {
     const dropdownId = useId()
     const rootRef = useRef<HTMLDivElement>(null)
     const [isOpen, setIsOpen] = useState(false)

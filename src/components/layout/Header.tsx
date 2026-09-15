@@ -7,18 +7,7 @@ import { Container, FilterDropdown } from '@/components/ui'
 import { cn } from '@/components/ui/utils'
 import { routePaths } from '@/routePaths'
 
-const navigationItems = [
-    { label: 'Головна', to: routePaths.home },
-    { label: 'Роботодавцям', to: routePaths.demoPartner },
-    { label: 'Про нас', to: `${routePaths.home}#about`, inactive: true },
-    { label: 'Партнери', to: routePaths.demoPartner, inactive: true },
-    { label: 'Контакти', to: routePaths.contacts },
-]
-
-const languageOptions = [
-    { label: 'UA', value: 'ua' },
-    { label: 'EN', value: 'en' },
-]
+import { languageOptions, navigationItems } from './headerData'
 
 type HeaderProps = ComponentPropsWithoutRef<'header'>
 

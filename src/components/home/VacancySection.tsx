@@ -3,37 +3,17 @@ import { HiMagnifyingGlass } from 'react-icons/hi2'
 
 import { fetchVacancies } from '@/api'
 import { ErrorBlock, Pagination } from '@/components/ui'
-import type { CategoryKey, CountryKey, Vacancy } from '@/types'
+import { useApiResource } from '@/hooks/useApiResource'
+import type { CategoryKey, CountryKey } from '@/types'
 
-import { categories } from './homeData'
+import { categories } from '@/data/homeData'
+import {
+    filterVacancies,
+    getFiltersKey,
+    getPaginatedVacancies,
+    getTotalVacancyPages,
+} from './vacancySectionUtils'
 import { VacancyGrid, VacancyGridSkeleton } from './VacancyGrid'
-
-const VACANCIES_PER_PAGE = 32
-
-function getFiltersKey({
-    searchQuery,
-    selectedCategory,
-    selectedCountry,
-}: {
-    searchQuery: string
-    selectedCategory: CategoryKey | ''
-    selectedCountry: CountryKey | ''
-}) {
-    return `${selectedCategory}:${selectedCountry}:${searchQuery.trim().toLowerCase()}`
-}
-
-type VacanciesState =
-    | {
-          status: 'loading'
-      }
-    | {
-          status: 'success'
-          vacancies: Vacancy[]
-      }
-    | {
-          status: 'error'
-          message: string
-      }
 
 type VacancySectionProps = {
     selectedCategory: CategoryKey | ''
@@ -50,50 +30,10 @@ export function VacancySection({
         currentPage: 1,
         filtersKey: '',
     })
-    const [vacanciesState, setVacanciesState] = useState<VacanciesState>({
-        status: 'loading',
-    })
-    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery)
-
-    const loadVacancies = useCallback(async (options?: {
-        isStale?: () => boolean
-        showLoading?: boolean
-    }) => {
-        if (options?.showLoading) {
-            setVacanciesState({ status: 'loading' })
-        }
-
-        const response = await fetchVacancies()
-
-        if (options?.isStale?.()) {
-            return
-        }
-
-        if (response.ok) {
-            setVacanciesState({
-                status: 'success',
-                vacancies: response.data,
-            })
-            return
-        }
-
-        setVacanciesState({
-            status: 'error',
-            message: response.error.message,
-        })
-    }, [])
-
-    useEffect(() => {
-        let shouldIgnore = false
-
-        void loadVacancies({
-            isStale: () => shouldIgnore,
-        })
-
-        return () => {
-            shouldIgnore = true
-        }
-    }, [loadVacancies])
+    const [debouncedSearchQuery, setDebouncedSearchQuery] =
+        useState(searchQuery)
+    const { load: loadVacancies, state: vacanciesState } =
+        useApiResource(fetchVacancies)
 
     useEffect(() => {
         const timeoutId = window.setTimeout(() => {
@@ -110,16 +50,12 @@ export function VacancySection({
             return []
         }
 
-        const normalizedSearchQuery = debouncedSearchQuery.trim().toLowerCase()
-
-        return vacanciesState.vacancies.filter(
-            (vacancy) =>
-                (!selectedCategory ||
-                    vacancy.categoryKey === selectedCategory) &&
-                (!selectedCountry || vacancy.countryKey === selectedCountry) &&
-                (!normalizedSearchQuery ||
-                    vacancy.title.toLowerCase().includes(normalizedSearchQuery))
-        )
+        return filterVacancies({
+            searchQuery: debouncedSearchQuery,
+            selectedCategory,
+            selectedCountry,
+            vacancies: vacanciesState.data,
+        })
     }, [
         debouncedSearchQuery,
         selectedCategory,
@@ -134,15 +70,10 @@ export function VacancySection({
     })
     const currentPage =
         pageState.filtersKey === filtersKey ? pageState.currentPage : 1
-    const totalPages = Math.ceil(visibleVacancies.length / VACANCIES_PER_PAGE)
+    const totalPages = getTotalVacancyPages(visibleVacancies.length)
 
     const displayedVacancies = useMemo(() => {
-        const startIndex = (currentPage - 1) * VACANCIES_PER_PAGE
-
-        return visibleVacancies.slice(
-            startIndex,
-            startIndex + VACANCIES_PER_PAGE
-        )
+        return getPaginatedVacancies(visibleVacancies, currentPage)
     }, [currentPage, visibleVacancies])
 
     const selectedCategoryLabel = useMemo(
@@ -171,7 +102,10 @@ export function VacancySection({
     )
 
     return (
-        <div id="vacancies" className="scroll-mt-24">
+        <div
+            id="vacancies"
+            className="scroll-mt-24"
+        >
             <div className="mb-6 flex items-center justify-between gap-4">
                 <div>
                     <h2 className="text-primary text-3xl font-bold">
@@ -198,25 +132,22 @@ export function VacancySection({
                 <ErrorBlock
                     title="Не вдалося завантажити вакансії"
                     message={vacanciesState.message}
-                    onRetry={() =>
-                        void loadVacancies({
-                            showLoading: true,
-                        })
-                    }
+                    onRetry={loadVacancies}
                 />
             )}
             {vacanciesState.status === 'success' &&
                 visibleVacancies.length === 0 && <VacancyEmptyState />}
-            {vacanciesState.status === 'success' && visibleVacancies.length > 0 && (
-                <>
-                    <VacancyGrid vacancies={displayedVacancies} />
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={handlePageChange}
-                    />
-                </>
-            )}
+            {vacanciesState.status === 'success' &&
+                visibleVacancies.length > 0 && (
+                    <>
+                        <VacancyGrid vacancies={displayedVacancies} />
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
+                    </>
+                )}
         </div>
     )
 }
@@ -225,7 +156,10 @@ function VacancyEmptyState() {
     return (
         <div className="border-border bg-surface flex min-h-[14.25rem] flex-col items-start justify-center rounded-md border p-6">
             <span className="bg-accent/25 text-success flex size-11 items-center justify-center rounded-md">
-                <HiMagnifyingGlass aria-hidden="true" className="size-5" />
+                <HiMagnifyingGlass
+                    aria-hidden="true"
+                    className="size-5"
+                />
             </span>
             <h3 className="text-primary mt-4 text-xl font-bold">
                 Вакансії не знайдено

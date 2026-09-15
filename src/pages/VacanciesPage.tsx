@@ -4,20 +4,19 @@ import { useSearchParams } from 'react-router'
 import { Hero, VacancySection } from '@/components/home'
 import { Container, Section } from '@/components/ui'
 import type { CategoryKey, CountryKey } from '@/types'
-
-function getParamValue<TValue extends string>(
-    value: string | null
-): TValue | '' {
-    return value ? (value as TValue) : ''
-}
+import {
+    buildVacanciesSearchParams,
+    getCategorySearchParam,
+    getCountrySearchParam,
+} from '@/vacanciesSearch'
 
 export function VacanciesPage() {
     const [searchParams, setSearchParams] = useSearchParams()
     const [selectedCategory, setSelectedCategory] = useState<CategoryKey | ''>(
-        getParamValue<CategoryKey>(searchParams.get('category'))
+        getCategorySearchParam(searchParams.get('category'))
     )
     const [selectedCountry, setSelectedCountry] = useState<CountryKey | ''>(
-        getParamValue<CountryKey>(searchParams.get('country'))
+        getCountrySearchParam(searchParams.get('country'))
     )
     const [searchQuery, setSearchQuery] = useState(
         searchParams.get('query') ?? ''
@@ -33,21 +32,10 @@ export function VacanciesPage() {
             country?: CountryKey | ''
             query?: string
         }) => {
-            const nextParams = new URLSearchParams()
-
-            if (query.trim()) {
-                nextParams.set('query', query.trim())
-            }
-
-            if (country) {
-                nextParams.set('country', country)
-            }
-
-            if (category) {
-                nextParams.set('category', category)
-            }
-
-            setSearchParams(nextParams, { replace: true })
+            setSearchParams(
+                buildVacanciesSearchParams({ category, country, query }),
+                { replace: true }
+            )
         },
         [searchQuery, selectedCategory, selectedCountry, setSearchParams]
     )

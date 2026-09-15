@@ -40,7 +40,14 @@ const countryCatalog = [
     {
         key: 'poland',
         label: 'Польща',
-        cities: ['Вроцлав', 'Познань', 'Краків', 'Гданськ', 'Лодзь', 'Катовіце'],
+        cities: [
+            'Вроцлав',
+            'Познань',
+            'Краків',
+            'Гданськ',
+            'Лодзь',
+            'Катовіце',
+        ],
     },
     {
         key: 'czechia',
@@ -50,12 +57,26 @@ const countryCatalog = [
     {
         key: 'netherlands',
         label: 'Нідерланди',
-        cities: ['Амстердам', 'Роттердам', 'Ейндговен', 'Утрехт', 'Гаага', 'Тілбург'],
+        cities: [
+            'Амстердам',
+            'Роттердам',
+            'Ейндговен',
+            'Утрехт',
+            'Гаага',
+            'Тілбург',
+        ],
     },
     {
         key: 'spain',
         label: 'Іспанія',
-        cities: ['Мадрид', 'Барселона', 'Валенсія', 'Севілья', 'Малага', 'Більбао'],
+        cities: [
+            'Мадрид',
+            'Барселона',
+            'Валенсія',
+            'Севілья',
+            'Малага',
+            'Більбао',
+        ],
     },
     {
         key: 'italy',
@@ -398,16 +419,17 @@ function createVacancy(
     }
 }
 
-export const vacancies: Vacancy[] = countryCatalog.flatMap((country, countryIndex) =>
-    categoryCatalog.flatMap((category, categoryIndex) =>
-        vacancyPresets[category.key].map((preset, presetIndex) =>
-            createVacancy(
-                country,
-                category,
-                preset,
-                countryIndex * 37 + categoryIndex * 11 + presetIndex,
-                presetIndex
+export const vacancies: Vacancy[] = countryCatalog.flatMap(
+    (country, countryIndex) =>
+        categoryCatalog.flatMap((category, categoryIndex) =>
+            vacancyPresets[category.key].map((preset, presetIndex) =>
+                createVacancy(
+                    country,
+                    category,
+                    preset,
+                    countryIndex * 37 + categoryIndex * 11 + presetIndex,
+                    presetIndex
+                )
             )
         )
-    )
 )

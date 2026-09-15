@@ -1,4 +1,4 @@
-import { categories, countries, vacancies } from '@/components/home/homeData'
+import { categories, countries, vacancies } from '@/data/homeData'
 import type {
     AverageSalaryResponse,
     CategoriesResponse,

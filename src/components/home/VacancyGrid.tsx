@@ -17,7 +17,7 @@ export const VacancyGrid = memo(function VacancyGrid({
             {vacancies.map((vacancy) => (
                 <VacancyCard
                     vacancy={vacancy}
-                    key={`${vacancy.title}-${vacancy.location}`}
+                    key={vacancy.id}
                 />
             ))}
         </div>

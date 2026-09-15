@@ -1,62 +1,12 @@
-import {
-    HiArrowLeft,
-    HiArrowRight,
-} from 'react-icons/hi2'
+import { HiArrowLeft, HiArrowRight } from 'react-icons/hi2'
 
+import { getVisiblePaginationItems } from './paginationUtils'
 import { cn } from './utils'
-
-type PaginationItem = number | 'ellipsis-start' | 'ellipsis-end'
 
 type PaginationProps = {
     currentPage: number
     totalPages: number
     onPageChange: (page: number) => void
-}
-
-function getVisiblePaginationItems(
-    currentPage: number,
-    totalPages: number
-): PaginationItem[] {
-    if (totalPages <= 7) {
-        return Array.from({ length: totalPages }, (_, index) => index + 1)
-    }
-
-    if (currentPage <= 2) {
-        return [1, 2, 3, 'ellipsis-end', totalPages]
-    }
-
-    if (currentPage === 3) {
-        return [1, 2, 3, 4, 'ellipsis-end', totalPages]
-    }
-
-    if (currentPage === totalPages) {
-        return [1, 'ellipsis-start', totalPages - 1, totalPages]
-    }
-
-    if (currentPage === totalPages - 1) {
-        return [1, 'ellipsis-start', totalPages - 2, totalPages - 1, totalPages]
-    }
-
-    if (currentPage === totalPages - 2) {
-        return [
-            1,
-            'ellipsis-start',
-            totalPages - 3,
-            totalPages - 2,
-            totalPages - 1,
-            totalPages,
-        ]
-    }
-
-    return [
-        1,
-        'ellipsis-start',
-        currentPage - 1,
-        currentPage,
-        currentPage + 1,
-        'ellipsis-end',
-        totalPages,
-    ]
 }
 
 export function Pagination({
@@ -100,9 +50,8 @@ export function Pagination({
                         <button
                             aria-current={isActive ? 'page' : undefined}
                             className={cn(
-                                'border-border bg-surface text-primary hover:bg-[#f4f7f1] focus-visible:outline-accent flex size-11 cursor-pointer items-center justify-center rounded-full border text-base font-semibold transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2',
-                                isActive &&
-                                    'hover:bg-[#17212b]'
+                                'border-border bg-surface text-primary focus-visible:outline-accent flex size-11 cursor-pointer items-center justify-center rounded-full border text-base font-semibold transition-colors duration-150 hover:bg-[#f4f7f1] focus-visible:outline-2 focus-visible:outline-offset-2',
+                                isActive && 'hover:bg-[#17212b]'
                             )}
                             key={item}
                             style={
@@ -148,7 +97,7 @@ function PaginationArrow({
     return (
         <button
             aria-label={label}
-            className="border-border bg-surface text-primary hover:bg-[#f4f7f1] focus-visible:outline-accent flex size-11 cursor-pointer items-center justify-center rounded-full border transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:text-muted disabled:opacity-45 disabled:hover:bg-surface"
+            className="border-border bg-surface text-primary focus-visible:outline-accent disabled:text-muted disabled:hover:bg-surface flex size-11 cursor-pointer items-center justify-center rounded-full border transition-colors duration-150 hover:bg-[#f4f7f1] focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-45"
             type="button"
             disabled={disabled}
             onClick={onClick}

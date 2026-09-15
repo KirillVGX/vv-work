@@ -1,6 +1,7 @@
 import { HiArrowPath } from 'react-icons/hi2'
 
 import { Button } from './Button'
+import { cn } from './utils'
 
 type ErrorBlockProps = {
     title: string
@@ -21,14 +22,13 @@ export function ErrorBlock({
 }: ErrorBlockProps) {
     return (
         <div
-            className={`border-border bg-surface flex ${minHeightClassName} flex-col items-start justify-center rounded-md border p-5`}
+            className={cn(
+                'border-border bg-surface flex flex-col items-start justify-center rounded-md border p-5',
+                minHeightClassName
+            )}
         >
-            <p className="text-primary font-bold">
-                {title}
-            </p>
-            <p className="text-muted mt-2 max-w-xl text-sm">
-                {message}
-            </p>
+            <p className="text-primary font-bold">{title}</p>
+            <p className="text-muted mt-2 max-w-xl text-sm">{message}</p>
             <Button
                 className="mt-5 gap-2"
                 disabled={isRetrying}
