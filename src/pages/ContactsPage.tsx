@@ -5,31 +5,17 @@ import { HiClock, HiEnvelope, HiMapPin, HiPhone } from 'react-icons/hi2'
 import { submitApplication } from '@/api'
 import { Button, Container, Input, Section } from '@/components/ui'
 import { cn } from '@/components/ui/utils'
-
-type ApplicationFormValues = {
-    name: string
-    email: string
-    contact: string
-    subject: string
-    message: string
-}
-
-type ApplicationFormErrors = Partial<
-    Record<keyof ApplicationFormValues, string>
->
+import {
+    initialFormValues,
+    validateApplicationForm,
+    type ApplicationFormErrors,
+    type ApplicationFormValues,
+} from './contactFormValidation'
 
 type ApplicationSubmitState =
     | { status: 'idle' }
     | { status: 'success'; message: string; isPending?: boolean }
     | { status: 'error'; message: string }
-
-const initialFormValues: ApplicationFormValues = {
-    name: '',
-    email: '',
-    contact: '',
-    subject: '',
-    message: '',
-}
 
 const contactItems = [
     {
@@ -57,32 +43,6 @@ const contactItems = [
         text: 'Заявки з форми опрацьовуємо у порядку надходження.',
     },
 ]
-
-function isValidPhoneOrTelegram(value: string) {
-    const trimmedValue = value.trim()
-    const phonePattern = /^\+?[0-9\s()-]{7,20}$/
-    const telegramPattern = /^@?[A-Za-z0-9_]{5,32}$/
-
-    return phonePattern.test(trimmedValue) || telegramPattern.test(trimmedValue)
-}
-
-function validateApplicationForm(values: ApplicationFormValues) {
-    const errors: ApplicationFormErrors = {}
-
-    if (values.name.trim().length < 2) {
-        errors.name = 'Вкажіть імʼя мінімум з 2 символів.'
-    }
-
-    if (!isValidPhoneOrTelegram(values.contact)) {
-        errors.contact = 'Вкажіть коректний телефон або Telegram.'
-    }
-
-    if (values.message.length > 500) {
-        errors.message = 'Повідомлення має містити не більше 500 символів.'
-    }
-
-    return errors
-}
 
 function FieldError({ id, message }: { id: string; message?: string }) {
     if (!message) {
