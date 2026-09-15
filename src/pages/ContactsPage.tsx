@@ -21,7 +21,7 @@ type ApplicationFormErrors = Partial<
 type ApplicationSubmitState =
     | { status: 'idle' }
     | { status: 'submitting' }
-    | { status: 'success'; message: string }
+    | { status: 'success'; message: string; isPending?: boolean }
     | { status: 'error'; message: string }
 
 const initialFormValues: ApplicationFormValues = {
@@ -132,7 +132,11 @@ export function ContactsPage() {
             return
         }
 
-        setSubmitState({ status: 'submitting' })
+        setSubmitState({
+            status: 'success',
+            isPending: true,
+            message: 'Заявку надсилаємо. Будь ласка, зачекайте.',
+        })
 
         const response = await submitApplication({
             name: formValues.name.trim(),
@@ -156,6 +160,10 @@ export function ContactsPage() {
             message: response.error.message,
         })
     }
+
+    const isSubmissionPending =
+        submitState.status === 'submitting' ||
+        (submitState.status === 'success' && submitState.isPending)
 
     return (
         <Section spacing="lg">
@@ -331,12 +339,12 @@ export function ContactsPage() {
 
                         <Button
                             className="mt-6"
-                            disabled={submitState.status === 'submitting'}
+                            disabled={isSubmissionPending}
                             fullWidth
                             size="lg"
                             type="submit"
                         >
-                            {submitState.status === 'submitting'
+                            {isSubmissionPending
                                 ? 'Надсилання...'
                                 : 'Надіслати'}
                         </Button>
