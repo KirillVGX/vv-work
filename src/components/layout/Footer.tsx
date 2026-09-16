@@ -25,8 +25,8 @@ const employerLinks = [
 ]
 
 const companyLinks = [
-    { label: 'Про нас', to: '#about' },
-    { label: 'Партнери', to: '#partners' },
+    { label: 'Про нас', to: routePaths.about },
+    { label: 'Партнери', to: routePaths.partners },
     { label: 'Контакти', to: routePaths.contacts },
 ]
 
