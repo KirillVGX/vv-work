@@ -85,6 +85,7 @@ export function SearchBar({
             query: searchQuery,
         })
     }, [searchQuery, selectedCategory, selectedCountry])
+    const vacanciesSearchTarget = `${vacanciesSearchParams}#vacancies`
 
     const countryOptions = useMemo<FilterDropdownOption<CountryKey | ''>[]>(
         () => [{ label: 'Усі країни', value: '' }, ...countries],
@@ -162,7 +163,7 @@ export function SearchBar({
 
             <Link
                 className="bg-accent text-primary hover:bg-accent-hover focus-visible:outline-accent m-1 inline-flex h-12 items-center justify-center gap-3 rounded-md px-5 text-base font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
-                to={vacanciesSearchParams}
+                to={vacanciesSearchTarget}
             >
                 <HiMagnifyingGlass
                     aria-hidden="true"
