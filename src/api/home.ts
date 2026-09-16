@@ -10,6 +10,7 @@ import type {
 } from '@/types/api'
 import type { CountryKey } from '@/types/domain'
 
+import { withCache } from './cache'
 import { mockFetch } from './mockFetch'
 import { translateHolidayName } from './holidayNames'
 import type { ApiResponse } from './types'
@@ -95,7 +96,13 @@ export function fetchVacanciesByPartnerSlug(
     )
 }
 
-export async function fetchAverageSalary(): Promise<
+export function fetchAverageSalary(): Promise<
+    ApiResponse<AverageSalaryResponse>
+> {
+    return withCache('average-salary', fetchAverageSalaryUncached)
+}
+
+async function fetchAverageSalaryUncached(): Promise<
     ApiResponse<AverageSalaryResponse>
 > {
     try {
@@ -161,7 +168,13 @@ export async function fetchAverageSalary(): Promise<
     }
 }
 
-export async function fetchExchangeRates(): Promise<
+export function fetchExchangeRates(): Promise<
+    ApiResponse<ExchangeRatesResponse>
+> {
+    return withCache('exchange-rates', fetchExchangeRatesUncached)
+}
+
+async function fetchExchangeRatesUncached(): Promise<
     ApiResponse<ExchangeRatesResponse>
 > {
     try {
@@ -205,7 +218,13 @@ export async function fetchExchangeRates(): Promise<
     }
 }
 
-export async function fetchUpcomingHolidays(): Promise<
+export function fetchUpcomingHolidays(): Promise<
+    ApiResponse<HolidaysResponse>
+> {
+    return withCache('upcoming-holidays', fetchUpcomingHolidaysUncached)
+}
+
+async function fetchUpcomingHolidaysUncached(): Promise<
     ApiResponse<HolidaysResponse>
 > {
     try {
