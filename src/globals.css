@@ -59,6 +59,7 @@
 @theme {
     --color-background: #f7f8f5;
     --color-surface: #ffffff;
+    --color-panel-dark: #090b08;
     --color-primary: #17212b;
     --color-accent: #b8f34a;
     --color-accent-hover: #a5de38;

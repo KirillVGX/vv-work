@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router'
 import { Hero } from '@/components/home'
 import {
     HomeCta,
-    HomeGuides,
     HomeInfoGrid,
     HomeNews,
     HomePartners,
@@ -65,10 +64,9 @@ export function HomePage() {
                 </Container>
             </Section>
 
-            <HomePartners />
             <HomeStats />
+            <HomePartners />
             <HomeNews />
-            <HomeGuides />
             <HomeInfoGrid />
             <HomeCta onClick={() => navigateToVacancies()} />
         </>
