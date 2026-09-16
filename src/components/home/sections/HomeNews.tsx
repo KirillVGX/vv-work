@@ -34,6 +34,7 @@ export function HomeNews() {
                     title="Новини"
                     subtitle="Актуальні події, корисні поради та зміни в сфері працевлаштування"
                     link="Усі новини"
+                    linkTo="#news"
                 />
                 <div className="mt-6 grid gap-7 md:grid-cols-3">
                     {news.map((item) => (

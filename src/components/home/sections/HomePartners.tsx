@@ -157,6 +157,7 @@ export function HomePartners() {
                     title="Наші партнери"
                     subtitle="Співпрацюємо з надійними компаніями по всій Європі"
                     link="Усі партнери"
+                    linkTo="#partners"
                 />
                 <div
                     className="border-border bg-surface mt-5 overflow-hidden rounded-xl border shadow-sm"

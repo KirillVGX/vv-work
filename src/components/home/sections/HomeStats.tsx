@@ -41,7 +41,7 @@ export function HomeStats() {
             spacing="none"
         >
             <div className="mx-auto w-[min(100%_-_2rem,110rem)] md:w-[min(100%_-_3rem,110rem)] xl:w-[min(100%_-_8rem,110rem)]">
-                <div className="bg-panel-dark grid min-h-[19.3rem] overflow-hidden rounded-3xl text-white shadow-[0_22px_50px_rgba(9,11,8,0.14)] md:grid-cols-2 lg:grid-cols-4 xl:py-15">
+                <div className="bg-panel-dark grid min-h-[19.3rem] overflow-hidden rounded-3xl text-white md:grid-cols-2 lg:grid-cols-4 xl:py-15">
                     {stats.map((item, index) => {
                         const Icon = item.icon
 

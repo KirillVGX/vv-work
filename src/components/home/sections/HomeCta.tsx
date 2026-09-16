@@ -9,21 +9,21 @@ export function HomeCta({ onClick }: { onClick: () => void }) {
             spacing="none"
         >
             <Container>
-                <div className="bg-primary text-surface grid gap-8 rounded-xl px-9 py-10 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+                <div className="bg-accent text-primary grid gap-8 rounded-xl px-9 py-10 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
                     <div>
-                        <p className="text-xs font-bold tracking-[0.32em] text-white/70 uppercase">
+                        <p className="text-xs font-bold tracking-[0.32em] text-primary/70 uppercase">
                             Почни свій шлях вже сьогодні
                         </p>
                         <h2 className="mt-4 text-4xl font-bold">
                             Знайди роботу своєї мрії
                         </h2>
-                        <p className="mt-4 max-w-2xl text-white/75">
+                        <p className="mt-4 max-w-2xl text-primary/75">
                             Приєднуйся до тисяч людей, які вже працюють у
                             найкращих компаніях Європи разом з VV Work.
                         </p>
                     </div>
                     <button
-                        className="bg-accent text-primary hover:bg-accent-hover focus-visible:outline-accent inline-flex h-14 items-center justify-center gap-3 rounded-md px-12 text-lg font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
+                        className="bg-primary text-surface hover:bg-panel-dark focus-visible:outline-primary inline-flex h-14 items-center justify-center gap-3 rounded-md px-12 text-lg font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
                         onClick={onClick}
                         type="button"
                     >
