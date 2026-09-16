@@ -142,21 +142,31 @@
 
     .hero-highlight::after {
         position: absolute;
-        right: -1.5%;
-        bottom: -4%;
-        left: -1.5%;
+        right: -3%;
+        bottom: -1%;
+        left: -3%;
         z-index: -1;
-        width: 103%;
-        height: 22%;
+        height: 0.18em;
         pointer-events: none;
         content: '';
         border-radius: 999px;
-        background: linear-gradient(
-            90deg,
-            transparent 0 5%,
-            rgb(182 255 62 / 0.92) 5% 95%,
-            transparent 95% 100%
+        background: rgb(182 255 62 / 0.96);
+        clip-path: polygon(
+            0 64%,
+            13% 48%,
+            34% 40%,
+            58% 34%,
+            82% 28%,
+            100% 20%,
+            100% 78%,
+            82% 72%,
+            58% 78%,
+            34% 86%,
+            13% 92%,
+            0 96%
         );
+        transform: rotate(-1.1deg);
+        transform-origin: left center;
     }
 
     .container {
