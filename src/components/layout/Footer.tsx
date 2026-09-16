@@ -9,6 +9,7 @@ import {
 import { HiEnvelope, HiMapPin, HiPhone } from 'react-icons/hi2'
 import { Link } from 'react-router'
 
+import { Container } from '@/components/ui'
 import { cn } from '@/components/ui/utils'
 import { routePaths } from '@/routePaths'
 
@@ -91,7 +92,7 @@ export function Footer({ className, ...props }: FooterProps) {
                 <span className="bg-accent absolute bottom-0 left-15 h-32 w-2 -rotate-45 rounded-full" />
             </div>
 
-            <div className="relative mx-auto grid w-full max-w-[110rem] grid-cols-1 gap-8 px-6 py-9 sm:grid-cols-2 md:px-10 lg:grid-cols-6 lg:gap-10 lg:px-16 lg:py-10">
+            <Container className="relative grid grid-cols-1 gap-8 py-9 sm:grid-cols-2 lg:grid-cols-6 lg:gap-10 lg:py-10">
                 <div className="sm:col-span-2 lg:col-span-1">
                     <Link
                         className="inline-flex items-center gap-3 focus-visible:outline-accent focus-visible:outline-2 focus-visible:outline-offset-4"
@@ -199,7 +200,7 @@ export function Footer({ className, ...props }: FooterProps) {
                         © 2026 VV Work. Всі права захищені.
                     </p>
                 </div>
-            </div>
+            </Container>
         </footer>
     )
 }

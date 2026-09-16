@@ -5,7 +5,7 @@ import {
     HiUsers,
 } from 'react-icons/hi2'
 
-import { Section } from '@/components/ui'
+import { Container, Section } from '@/components/ui'
 
 const stats = [
     {
@@ -40,7 +40,7 @@ export function HomeStats() {
             className="py-6"
             spacing="none"
         >
-            <div className="mx-auto w-[min(100%_-_2rem,110rem)] md:w-[min(100%_-_3rem,110rem)] xl:w-[min(100%_-_8rem,110rem)]">
+            <Container>
                 <div className="bg-panel-dark grid min-h-[19.3rem] overflow-hidden rounded-3xl text-white md:grid-cols-2 lg:grid-cols-4 xl:py-15">
                     {stats.map((item, index) => {
                         const Icon = item.icon
@@ -82,7 +82,7 @@ export function HomeStats() {
                         )
                     })}
                 </div>
-            </div>
+            </Container>
         </Section>
     )
 }

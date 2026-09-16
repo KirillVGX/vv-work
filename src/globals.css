@@ -146,7 +146,7 @@
         bottom: -1%;
         left: -3%;
         z-index: -1;
-        height: 0.18em;
+        height: 0.24em;
         pointer-events: none;
         content: '';
         border-radius: 999px;
