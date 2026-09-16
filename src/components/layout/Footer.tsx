@@ -6,7 +6,7 @@ import {
     FaTelegramPlane,
     FaYoutube,
 } from 'react-icons/fa'
-import { HiEnvelope, HiMapPin } from 'react-icons/hi2'
+import { HiEnvelope, HiMapPin, HiPhone } from 'react-icons/hi2'
 import { Link } from 'react-router'
 
 import { cn } from '@/components/ui/utils'
@@ -145,23 +145,38 @@ export function Footer({ className, ...props }: FooterProps) {
                         Контакти
                     </h2>
                     <div className="mt-4 grid gap-4 text-sm font-semibold text-white/55">
-                        <Link
+                        <a
                             className="flex items-center gap-3 transition-colors hover:text-accent focus-visible:text-accent focus-visible:outline-accent focus-visible:outline-2 focus-visible:outline-offset-4"
-                            to="mailto:hello@vvwork.com"
+                            href="mailto:hello@vv-work.com"
                         >
                             <HiEnvelope
                                 className="size-5"
                                 aria-hidden="true"
                             />
-                            hello@vvwork.com
-                        </Link>
-                        <p className="flex items-center gap-3">
+                            hello@vv-work.com
+                        </a>
+                        <a
+                            className="flex items-center gap-3 transition-colors hover:text-accent focus-visible:text-accent focus-visible:outline-accent focus-visible:outline-2 focus-visible:outline-offset-4"
+                            href="tel:+380670000000"
+                        >
+                            <HiPhone
+                                className="size-5"
+                                aria-hidden="true"
+                            />
+                            +380 67 000 00 00
+                        </a>
+                        <a
+                            className="flex items-center gap-3 transition-colors hover:text-accent focus-visible:text-accent focus-visible:outline-accent focus-visible:outline-2 focus-visible:outline-offset-4"
+                            href="https://www.google.com/maps/search/?api=1&query=%D0%9A%D0%B8%D1%97%D0%B2%2C%20%D0%A3%D0%BA%D1%80%D0%B0%D1%97%D0%BD%D0%B0"
+                            target="_blank"
+                            rel="noreferrer"
+                        >
                             <HiMapPin
                                 className="size-5"
                                 aria-hidden="true"
                             />
-                            Європа
-                        </p>
+                            Київ, Україна
+                        </a>
                     </div>
                 </div>
 
