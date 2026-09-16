@@ -6,6 +6,8 @@ import { ContactsPage } from '@/pages/ContactsPage'
 import { HomePage } from '@/pages/HomePage'
 import { PartnerPage } from '@/pages/PartnerPage'
 import { PartnersPage } from '@/pages/PartnersPage'
+import { PrivacyPolicyPage } from '@/pages/PrivacyPolicyPage'
+import { TermsPage } from '@/pages/TermsPage'
 import { VacanciesPage } from '@/pages/VacanciesPage'
 import { routePaths } from '@/routePaths'
 
@@ -36,6 +38,14 @@ export const router = createBrowserRouter([
             {
                 path: routePaths.partners,
                 element: <PartnersPage />,
+            },
+            {
+                path: routePaths.privacy,
+                element: <PrivacyPolicyPage />,
+            },
+            {
+                path: routePaths.terms,
+                element: <TermsPage />,
             },
         ],
     },

@@ -4,6 +4,8 @@ export const routePaths = {
     vacancies: '/vacancies',
     contacts: '/kontakty',
     partners: '/partners',
+    privacy: '/privacy-policy',
+    terms: '/terms',
     partner: '/partners/:slug',
     demoPartner: '/partners/demo-partner',
 }

@@ -31,8 +31,8 @@ const companyLinks = [
 ]
 
 const legalLinks = [
-    { label: 'Політика конфіденційності', to: '#privacy' },
-    { label: 'Умови використання', to: '#terms' },
+    { label: 'Політика конфіденційності', to: routePaths.privacy },
+    { label: 'Умови використання', to: routePaths.terms },
 ]
 
 const socialLinks = [

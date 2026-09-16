@@ -48,7 +48,7 @@ export function Header({ className, ...props }: HeaderProps) {
                                             : 'text-muted hover:bg-surface hover:text-primary'
                                     )
                                 }
-                                end={item.to === routePaths.home}
+                                end
                                 to={item.to}
                                 key={`${item.label}-${item.to}`}
                             >
@@ -120,6 +120,7 @@ export function Header({ className, ...props }: HeaderProps) {
                                                 : 'text-muted'
                                         )
                                     }
+                                    end
                                     to={item.to}
                                     key={`${item.label}-${item.to}-mobile`}
                                     onClick={() => setIsMenuOpen(false)}

@@ -8,7 +8,7 @@ type NavigationItem = {
 
 export const navigationItems: NavigationItem[] = [
     { label: 'Головна', to: routePaths.home },
-    { label: 'Роботодавцям', to: routePaths.demoPartner },
+    { label: 'Роботодавцям', to: `${routePaths.contacts}#employers`, inactive: true },
     { label: 'Про нас', to: routePaths.about },
     { label: 'Партнери', to: routePaths.partners },
     { label: 'Контакти', to: routePaths.contacts },
