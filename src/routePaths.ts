@@ -4,7 +4,7 @@ export const routePaths = {
     employers: '/employers',
     vacancies: '/vacancies',
     vacancy: '/vacancies/:id',
-    contacts: '/kontakty',
+    contacts: '/contacts',
     partners: '/partners',
     privacy: '/privacy-policy',
     terms: '/terms',
