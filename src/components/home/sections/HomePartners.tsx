@@ -203,15 +203,19 @@ export function HomePartners() {
                         ))}
                     </div>
                 </div>
-                <div className="mt-6 flex items-center justify-center gap-3">
+                <div className="mt-2 flex items-center justify-center gap-1">
                     {partnerSlides.map((_, item) => (
                         <button
                             aria-label={`Показати слайд партнерів ${item + 1}`}
-                            className={`size-2.5 shrink-0 cursor-pointer rounded-full transition-colors ${item === activeSlideIndex ? 'bg-sky-500' : 'hover:bg-muted bg-[#dfe6e3]'}`}
+                            className="group flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                             key={item}
                             onClick={() => setActiveSlideIndex(item)}
                             type="button"
-                        />
+                        >
+                            <span
+                                className={`size-2.5 rounded-full transition-colors ${item === activeSlideIndex ? 'bg-sky-500' : 'bg-[#dfe6e3] group-hover:bg-muted'}`}
+                            />
+                        </button>
                     ))}
                 </div>
             </Container>

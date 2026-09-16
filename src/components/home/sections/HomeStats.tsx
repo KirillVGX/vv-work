@@ -72,9 +72,9 @@ export function HomeStats() {
                                 <p className="mt-7 text-[2.5rem] leading-none font-extrabold text-white">
                                     {item.value}
                                 </p>
-                                <h3 className="mt-2.5 text-lg leading-6 font-extrabold text-white">
+                                <p className="mt-2.5 text-lg leading-6 font-extrabold text-white">
                                     {item.label}
-                                </h3>
+                                </p>
                                 <p className="mt-0.5 max-w-68 text-base leading-[1.45] text-white/62">
                                     {item.text}
                                 </p>
