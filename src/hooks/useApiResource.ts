@@ -8,8 +8,10 @@ type ResourceState<TData> =
     | { status: 'error'; message: string }
 
 export function useApiResource<TData>(
-    loadResource: () => Promise<ApiResponse<TData>>
+    loadResource: () => Promise<ApiResponse<TData>>,
+    options?: { enabled?: boolean }
 ) {
+    const enabled = options?.enabled ?? true
     const [state, setState] = useState<ResourceState<TData>>({
         status: 'loading',
     })
@@ -36,13 +38,17 @@ export function useApiResource<TData>(
     }, [loadResource])
 
     useEffect(() => {
+        if (!enabled) {
+            return
+        }
+
         // oxlint-disable-next-line react/set-state-in-effect
         void load()
 
         return () => {
             requestIdRef.current += 1
         }
-    }, [load])
+    }, [load, enabled])
 
     return { load, state }
 }

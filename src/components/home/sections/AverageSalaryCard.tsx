@@ -4,6 +4,7 @@ import { HiBanknotes } from 'react-icons/hi2'
 import { fetchAverageSalary, fetchExchangeRates } from '@/api'
 import { ErrorBlock, FilterDropdown } from '@/components/ui'
 import { useApiResource } from '@/hooks/useApiResource'
+import { useInView } from '@/hooks/useInView'
 import type { AverageSalary, CurrencyCode, ExchangeRates } from '@/types'
 
 import {
@@ -18,6 +19,7 @@ function SalaryChartSkeleton() {
 }
 
 export function AverageSalaryCard() {
+    const { ref, isInView } = useInView<HTMLElement>()
     const [currency, setCurrency] = useState<CurrencyCode>('EUR')
 
     const loadSalaryResource = useCallback(async () => {
@@ -46,10 +48,13 @@ export function AverageSalaryCard() {
     const { load: loadSalary, state } = useApiResource<{
         salary: AverageSalary
         rates: ExchangeRates
-    }>(loadSalaryResource)
+    }>(loadSalaryResource, { enabled: isInView })
 
     return (
-        <article className="border-border bg-surface rounded-xl border p-8 shadow-sm">
+        <article
+            className="border-border bg-surface rounded-xl border p-8 shadow-sm"
+            ref={ref}
+        >
             <div className="flex items-start justify-between gap-4">
                 <div>
                     <h2 className="text-primary text-2xl font-bold">

@@ -3,6 +3,7 @@ import { HiCalendarDays } from 'react-icons/hi2'
 import { fetchUpcomingHolidays } from '@/api'
 import { ErrorBlock } from '@/components/ui'
 import { useApiResource } from '@/hooks/useApiResource'
+import { useInView } from '@/hooks/useInView'
 
 const holidayDateFormatter = new Intl.DateTimeFormat('uk-UA', {
     day: 'numeric',
@@ -32,10 +33,17 @@ function HolidaysCardSkeleton() {
 }
 
 export function HolidaysCard() {
-    const { load: loadHolidays, state } = useApiResource(fetchUpcomingHolidays)
+    const { ref, isInView } = useInView<HTMLElement>()
+    const { load: loadHolidays, state } = useApiResource(
+        fetchUpcomingHolidays,
+        { enabled: isInView }
+    )
 
     return (
-        <article className="bg-panel-dark rounded-3xl p-10 text-white shadow-[0_22px_50px_rgba(9,11,8,0.14)]">
+        <article
+            className="bg-panel-dark rounded-3xl p-10 text-white shadow-[0_22px_50px_rgba(9,11,8,0.14)]"
+            ref={ref}
+        >
             <div className="flex items-center gap-4 border-b border-white/10 pb-4">
                 <span className="flex size-12 items-center justify-center rounded-xl bg-accent/15 text-accent">
                     <HiCalendarDays className="size-6" />
