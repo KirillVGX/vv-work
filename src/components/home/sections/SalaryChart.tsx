@@ -94,7 +94,7 @@ export function SalaryChart({
     )
 
     return (
-        <div className="mt-8">
+        <div className="mt-8 min-w-0 overflow-hidden">
             <div className="relative">
                 <svg
                     className="h-28 w-full cursor-pointer overflow-visible"
@@ -199,7 +199,7 @@ export function SalaryChart({
                     </div>
                 )}
             </div>
-            <div className="text-muted mt-2 flex justify-between text-xs">
+            <div className="text-muted mt-2 flex justify-between gap-2 text-[0.6875rem] sm:text-xs">
                 {points.map((point) => (
                     <span key={point.label}>{point.label}</span>
                 ))}

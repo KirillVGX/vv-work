@@ -41,18 +41,18 @@ export function HolidaysCard() {
 
     return (
         <article
-            className="bg-panel-dark rounded-3xl p-10 text-white shadow-[0_22px_50px_rgba(9,11,8,0.14)]"
+            className="bg-panel-dark overflow-hidden rounded-2xl p-5 text-white shadow-[0_22px_50px_rgba(9,11,8,0.14)] sm:rounded-3xl sm:p-10"
             ref={ref}
         >
-            <div className="flex items-center gap-4 border-b border-white/10 pb-4">
-                <span className="flex size-12 items-center justify-center rounded-xl bg-accent/15 text-accent">
-                    <HiCalendarDays className="size-6" />
+            <div className="flex items-start gap-3 border-b border-white/10 pb-4 sm:items-center sm:gap-4">
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-accent/15 text-accent sm:size-12">
+                    <HiCalendarDays className="size-5 sm:size-6" />
                 </span>
                 <div className="min-w-0">
-                    <h2 className="text-xl leading-6 font-extrabold text-white">
+                    <h2 className="text-lg leading-6 font-extrabold text-white sm:text-xl">
                         Свята в Європі
                     </h2>
-                    <p className="mt-1 text-sm leading-5 text-white/62">
+                    <p className="mt-1 text-sm leading-5 break-words text-white/62">
                         Найближчі офіційні вихідні дні · дані Nager.Date
                     </p>
                 </div>
@@ -75,10 +75,10 @@ export function HolidaysCard() {
                 <div className="grid">
                     {state.data.map((holiday) => (
                         <div
-                            className="flex items-center justify-between gap-5 border-b border-white/10 py-4 text-sm last:border-b-0 last:pb-0"
+                            className="flex items-center justify-between gap-3 border-b border-white/10 py-4 text-sm last:border-b-0 last:pb-0 sm:gap-5"
                             key={`${holiday.countryKey}-${holiday.date}`}
                         >
-                            <div className="flex min-w-0 items-center gap-4">
+                            <div className="flex min-w-0 items-center gap-3 sm:gap-4">
                                 <img
                                     alt=""
                                     aria-hidden="true"
@@ -97,7 +97,7 @@ export function HolidaysCard() {
                                     </p>
                                 </div>
                             </div>
-                            <span className="shrink-0 rounded-xl bg-accent px-4 py-2 text-sm leading-5 font-extrabold text-primary">
+                            <span className="shrink-0 rounded-xl bg-accent px-3 py-2 text-sm leading-5 font-extrabold text-primary sm:px-4">
                                 {formatHolidayDate(holiday.date)}
                             </span>
                         </div>

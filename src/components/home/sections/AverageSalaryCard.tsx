@@ -52,17 +52,17 @@ export function AverageSalaryCard() {
 
     return (
         <article
-            className="border-border bg-surface rounded-xl border p-8 shadow-sm"
+            className="border-border bg-surface overflow-hidden rounded-xl border p-5 shadow-sm sm:p-8"
             ref={ref}
         >
-            <div className="flex items-start justify-between gap-4">
-                <div>
-                    <h2 className="text-primary text-2xl font-bold">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="min-w-0">
+                    <h2 className="text-primary text-xl font-bold sm:text-2xl">
                         Середня зарплата
                     </h2>
                     {state.status === 'success' ? (
                         <>
-                            <p className="text-primary mt-8 text-5xl font-bold">
+                            <p className="text-primary mt-7 flex flex-wrap items-center gap-3 text-4xl leading-none font-bold sm:mt-8 sm:text-5xl">
                                 {formatCurrencyAmount(
                                     convertFromEur(
                                         state.data.salary.amount,
@@ -71,7 +71,7 @@ export function AverageSalaryCard() {
                                     ),
                                     currency
                                 )}
-                                <span className="bg-accent/20 text-success ml-3 rounded-full px-3 py-1 text-sm">
+                                <span className="bg-accent/20 text-success rounded-full px-3 py-1 text-sm leading-5">
                                     {state.data.salary.changePercent > 0
                                         ? '+'
                                         : ''}
@@ -88,7 +88,7 @@ export function AverageSalaryCard() {
                     )}
                 </div>
                 <FilterDropdown
-                    className="w-32 shrink-0"
+                    className="w-full shrink-0 sm:w-32"
                     icon={
                         <HiBanknotes
                             aria-hidden="true"
