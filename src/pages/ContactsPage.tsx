@@ -133,7 +133,7 @@ export function ContactsPage() {
     return (
         <Section spacing="lg">
             <Container>
-                <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+                <div className="mx-auto grid max-w-5xl gap-10">
                     <div>
                         <p className="text-muted text-sm font-semibold">
                             Контакти
@@ -147,7 +147,7 @@ export function ContactsPage() {
                             команди продукту.
                         </p>
 
-                        <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                        <div className="mt-8 grid gap-3 md:grid-cols-2">
                             {contactItems.map((item) => {
                                 const Icon = item.icon
 
