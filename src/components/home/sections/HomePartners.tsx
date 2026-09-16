@@ -24,6 +24,7 @@ import {
 } from 'react-icons/si'
 
 import { Container, Section } from '@/components/ui'
+import { routePaths } from '@/routePaths'
 
 import { SectionHeader } from './SectionHeader'
 
@@ -157,7 +158,7 @@ export function HomePartners() {
                     title="Наші партнери"
                     subtitle="Співпрацюємо з надійними компаніями по всій Європі"
                     link="Усі партнери"
-                    linkTo="#partners"
+                    linkTo={routePaths.partners}
                 />
                 <div
                     className="border-border bg-surface mt-5 overflow-hidden rounded-xl border shadow-sm"
