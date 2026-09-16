@@ -150,10 +150,13 @@
         height: 22%;
         pointer-events: none;
         content: '';
-        background-image: url('/images/layer.png');
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: 100% 100%;
+        border-radius: 999px;
+        background: linear-gradient(
+            90deg,
+            transparent 0 5%,
+            rgb(182 255 62 / 0.92) 5% 95%,
+            transparent 95% 100%
+        );
     }
 
     .container {

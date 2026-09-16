@@ -4,11 +4,9 @@ import { createBrowserRouter } from 'react-router'
 
 import { AppLayout } from '@/components/layout'
 import { Container, Section } from '@/components/ui'
+import { HomePage } from '@/pages/HomePage'
 import { routePaths } from '@/routePaths'
 
-const HomePage = lazy(() =>
-    import('@/pages/HomePage').then((module) => ({ default: module.HomePage }))
-)
 const VacanciesPage = lazy(() =>
     import('@/pages/VacanciesPage').then((module) => ({
         default: module.VacanciesPage,
@@ -67,7 +65,7 @@ function PageFallback() {
     )
 }
 
-function routeElement(Component: LazyExoticComponent<ComponentType>) {
+function routeElement(Component: ComponentType | LazyExoticComponent<ComponentType>) {
     return (
         <Suspense fallback={<PageFallback />}>
             <Component />
