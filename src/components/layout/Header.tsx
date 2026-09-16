@@ -81,7 +81,7 @@ export function Header({ className, ...props }: HeaderProps) {
                     </div>
 
                     <button
-                        className="border-border bg-surface text-primary inline-flex size-10 items-center justify-center rounded-md border lg:hidden"
+                        className="border-border bg-surface text-primary focus-visible:outline-accent inline-flex size-10 items-center justify-center rounded-md border focus-visible:outline-2 focus-visible:outline-offset-2 lg:hidden"
                         type="button"
                         aria-label={
                             isMenuOpen ? 'Закрити меню' : 'Відкрити меню'
@@ -106,6 +106,7 @@ export function Header({ className, ...props }: HeaderProps) {
                     )}
                     id="mobile-navigation"
                     aria-label="Мобільна навігація"
+                    hidden={!isMenuOpen}
                 >
                     <div className="min-h-0">
                         <div className="grid gap-1">

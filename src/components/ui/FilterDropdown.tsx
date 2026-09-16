@@ -29,6 +29,7 @@ export function FilterDropdown<TValue extends string = string>({
     size = 'md',
 }: FilterDropdownProps<TValue>) {
     const dropdownId = useId()
+    const labelId = useId()
     const rootRef = useRef<HTMLDivElement>(null)
     const [isOpen, setIsOpen] = useState(false)
 
@@ -78,8 +79,10 @@ export function FilterDropdown<TValue extends string = string>({
                         : 'h-14 gap-4 px-6'
                 )}
                 type="button"
+                aria-label={`${label}: ${displayLabel}`}
                 aria-expanded={isOpen}
                 aria-controls={dropdownId}
+                aria-haspopup="listbox"
                 onClick={() => setIsOpen((current) => !current)}
             >
                 <span
@@ -89,6 +92,12 @@ export function FilterDropdown<TValue extends string = string>({
                     )}
                 >
                     {icon}
+                </span>
+                <span
+                    className="sr-only"
+                    id={labelId}
+                >
+                    {label}
                 </span>
                 <span
                     className={cn(
@@ -117,6 +126,9 @@ export function FilterDropdown<TValue extends string = string>({
                         : 'pointer-events-none -translate-y-1.5 opacity-0'
                 )}
                 id={dropdownId}
+                role="listbox"
+                aria-labelledby={labelId}
+                hidden={!isOpen}
             >
                 {options.map((option) => {
                     const isSelected = option.value === value
@@ -132,6 +144,8 @@ export function FilterDropdown<TValue extends string = string>({
                                     'bg-accent/20 hover:bg-accent/30 font-semibold'
                             )}
                             type="button"
+                            role="option"
+                            aria-selected={isSelected}
                             key={option.value}
                             onClick={() => {
                                 onChange(option.value)

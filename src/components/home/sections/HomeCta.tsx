@@ -23,12 +23,15 @@ export function HomeCta({ onClick }: { onClick: () => void }) {
                         </p>
                     </div>
                     <button
-                        className="bg-accent text-primary hover:bg-accent-hover inline-flex h-14 items-center justify-center gap-3 rounded-md px-12 text-lg font-bold transition-colors"
+                        className="bg-accent text-primary hover:bg-accent-hover focus-visible:outline-accent inline-flex h-14 items-center justify-center gap-3 rounded-md px-12 text-lg font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
                         onClick={onClick}
                         type="button"
                     >
                         Долучитися
-                        <HiArrowRight className="size-5" />
+                        <HiArrowRight
+                            aria-hidden="true"
+                            className="size-5"
+                        />
                     </button>
                 </div>
             </Container>
