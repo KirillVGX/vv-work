@@ -1,14 +1,8 @@
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router'
 
-import { Hero } from '@/components/home'
-import {
-    HomeCta,
-    HomeInfoGrid,
-    HomeNews,
-    HomePartners,
-    HomeStats,
-} from '@/components/home/sections'
+import { DeferredHomeSections } from '@/components/home/DeferredHomeSections'
+import { Hero } from '@/components/home/Hero'
 import { Container, Section } from '@/components/ui'
 import type { CategoryKey, CountryKey } from '@/types'
 import { buildVacanciesPath } from '@/vacanciesSearch'
@@ -64,11 +58,7 @@ export function HomePage() {
                 </Container>
             </Section>
 
-            <HomeStats />
-            <HomePartners />
-            <HomeNews />
-            <HomeInfoGrid />
-            <HomeCta onClick={() => navigateToVacancies()} />
+            <DeferredHomeSections onCtaClick={() => navigateToVacancies()} />
         </>
     )
 }
