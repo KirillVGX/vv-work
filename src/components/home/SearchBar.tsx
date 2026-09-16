@@ -1,13 +1,16 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { HiBriefcase, HiMagnifyingGlass, HiMapPin } from 'react-icons/hi2'
 import { Link } from 'react-router'
 
+import { fetchVacancies } from '@/api'
 import { FilterDropdown, type FilterDropdownOption } from '@/components/ui'
-import type { CategoryKey, CountryKey } from '@/types'
+import type { CategoryKey, CountryKey, Vacancy } from '@/types'
 import { buildVacanciesPath } from '@/vacanciesSearch'
 
 import { categories, countryOptions as countries } from '@/data/homeData'
 import { SearchField } from './SearchField'
+import { SearchSuggestions } from './SearchSuggestions'
+import { getSearchSuggestions } from './vacancySectionUtils'
 
 type SearchBarProps = {
     selectedCategory: CategoryKey | ''
@@ -26,6 +29,55 @@ export function SearchBar({
     onCountryChange,
     onSearchQueryChange,
 }: SearchBarProps) {
+    const searchFieldRef = useRef<HTMLDivElement>(null)
+    const [vacancies, setVacancies] = useState<Vacancy[]>([])
+    const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false)
+
+    useEffect(() => {
+        let isStale = false
+
+        void fetchVacancies().then((response) => {
+            if (!isStale && response.ok) {
+                setVacancies(response.data)
+            }
+        })
+
+        return () => {
+            isStale = true
+        }
+    }, [])
+
+    useEffect(() => {
+        if (!isSuggestionsOpen) {
+            return
+        }
+
+        function handlePointerDown(event: PointerEvent) {
+            if (!searchFieldRef.current?.contains(event.target as Node)) {
+                setIsSuggestionsOpen(false)
+            }
+        }
+
+        function handleKeyDown(event: KeyboardEvent) {
+            if (event.key === 'Escape') {
+                setIsSuggestionsOpen(false)
+            }
+        }
+
+        document.addEventListener('pointerdown', handlePointerDown)
+        document.addEventListener('keydown', handleKeyDown)
+
+        return () => {
+            document.removeEventListener('pointerdown', handlePointerDown)
+            document.removeEventListener('keydown', handleKeyDown)
+        }
+    }, [isSuggestionsOpen])
+
+    const suggestions = useMemo(
+        () => getSearchSuggestions(searchQuery, vacancies),
+        [searchQuery, vacancies]
+    )
+
     const vacanciesSearchParams = useMemo(() => {
         return buildVacanciesPath({
             category: selectedCategory,
@@ -52,7 +104,10 @@ export function SearchBar({
 
     return (
         <div className="border-border bg-surface mt-7 grid w-full overflow-visible rounded-md border shadow-[0_12px_30px_rgba(23,33,43,0.06)] lg:grid-cols-[minmax(0,1fr)_15.5rem_15.5rem_13.75rem]">
-            <div className="overflow-hidden rounded-t-md lg:rounded-l-md lg:rounded-tr-none">
+            <div
+                className="relative rounded-t-md lg:rounded-l-md lg:rounded-tr-none"
+                ref={searchFieldRef}
+            >
                 <SearchField
                     icon={
                         <HiMagnifyingGlass
@@ -62,8 +117,19 @@ export function SearchBar({
                     }
                     label="Яку роботу ви шукаєте?"
                     value={searchQuery}
-                    onChange={onSearchQueryChange}
+                    onChange={(value) => {
+                        onSearchQueryChange(value)
+                        setIsSuggestionsOpen(true)
+                    }}
+                    onFocus={() => setIsSuggestionsOpen(true)}
                 />
+                {isSuggestionsOpen && suggestions.length > 0 && (
+                    <SearchSuggestions
+                        searchQuery={searchQuery}
+                        suggestions={suggestions}
+                        onSelect={() => setIsSuggestionsOpen(false)}
+                    />
+                )}
             </div>
             <div className="border-border border-t lg:border-t-0 lg:border-l">
                 <FilterDropdown

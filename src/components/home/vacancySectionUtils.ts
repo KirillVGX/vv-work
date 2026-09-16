@@ -37,6 +37,37 @@ export function filterVacancies({
     )
 }
 
+export const SEARCH_SUGGESTIONS_LIMIT = 5
+
+export function getSearchSuggestions(searchQuery: string, vacancies: Vacancy[]) {
+    const normalizedSearchQuery = searchQuery.trim().toLowerCase()
+
+    if (!normalizedSearchQuery) {
+        return []
+    }
+
+    return vacancies
+        .filter((vacancy) =>
+            vacancy.title.toLowerCase().includes(normalizedSearchQuery)
+        )
+        .slice(0, SEARCH_SUGGESTIONS_LIMIT)
+}
+
+export function splitTitleAtMatch(title: string, searchQuery: string) {
+    const normalizedSearchQuery = searchQuery.trim().toLowerCase()
+    const matchIndex = title.toLowerCase().indexOf(normalizedSearchQuery)
+
+    if (!normalizedSearchQuery || matchIndex === -1) {
+        return { before: title, match: '', after: '' }
+    }
+
+    return {
+        before: title.slice(0, matchIndex),
+        match: title.slice(matchIndex, matchIndex + normalizedSearchQuery.length),
+        after: title.slice(matchIndex + normalizedSearchQuery.length),
+    }
+}
+
 export function getPaginatedVacancies(
     vacancies: Vacancy[],
     currentPage: number

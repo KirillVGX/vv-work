@@ -71,7 +71,7 @@ export function fetchCountries(): Promise<ApiResponse<CountriesResponse>> {
 }
 
 export function fetchVacancies(): Promise<ApiResponse<VacanciesResponse>> {
-    return mockFetch(() => vacancies)
+    return withCache('vacancies', () => mockFetch(() => vacancies))
 }
 
 export function fetchVacancyById(

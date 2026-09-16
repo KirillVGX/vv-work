@@ -5,6 +5,7 @@ type SearchFieldProps = {
     label: string
     value: string
     onChange: (value: string) => void
+    onFocus?: () => void
 }
 
 export function SearchField({
@@ -12,6 +13,7 @@ export function SearchField({
     label,
     value,
     onChange,
+    onFocus,
 }: SearchFieldProps) {
     return (
         <label className="text-muted flex h-14 min-w-0 items-center gap-4 px-6">
@@ -23,6 +25,7 @@ export function SearchField({
                 placeholder={label}
                 aria-label={label}
                 onChange={(event) => onChange(event.target.value)}
+                onFocus={onFocus}
             />
         </label>
     )
