@@ -1,5 +1,21 @@
 # React + TypeScript + Vite
 
+## CI/CD
+
+GitHub Actions workflows are configured in `.github/workflows`.
+
+- `CI` runs on pull requests and pushes to `main`/`master`.
+- `Deploy` runs on pushes to `main`/`master` and can also be started manually.
+- Both workflows use Node 24 and run `npm ci`, `npm run test`, `npm run lint`, and `npm run build`.
+
+Production deploy uses Vercel CLI. Add these repository secrets in GitHub to enable deployment:
+
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
+
+If the Vercel secrets are not configured, the deploy workflow skips only the deployment steps after successful checks.
+
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
 Currently, two official plugins are available:
