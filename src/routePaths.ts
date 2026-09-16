@@ -3,6 +3,7 @@ export const routePaths = {
     about: '/about-us',
     employers: '/employers',
     vacancies: '/vacancies',
+    vacancy: '/vacancies/:id',
     contacts: '/kontakty',
     partners: '/partners',
     privacy: '/privacy-policy',

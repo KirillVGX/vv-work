@@ -27,7 +27,7 @@ export const partners: Partner[] = [
     {
         slug: 'demo-partner',
         name: 'VV Work Partner',
-        logo: 'V',
+        logo: 'W',
         country: 'Польща',
         city: 'Вроцлав',
         description:

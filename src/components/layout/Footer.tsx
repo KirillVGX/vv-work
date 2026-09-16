@@ -196,7 +196,7 @@ export function Footer({ className, ...props }: FooterProps) {
                         ))}
                     </nav>
                     <p className="mt-8 text-sm font-semibold text-white/45">
-                        © 2025 VV Work. Всі права захищені.
+                        © 2026 VV Work. Всі права захищені.
                     </p>
                 </div>
             </div>

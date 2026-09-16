@@ -1,7 +1,6 @@
 import { memo } from 'react'
 import {
     HiArrowRight,
-    HiBookmark,
     HiBriefcase,
     HiMapPin,
 } from 'react-icons/hi2'
@@ -12,6 +11,7 @@ import { routePaths } from '@/routePaths'
 import type { Vacancy } from '@/types/domain'
 
 import { MatchBadge } from './MatchBadge'
+import { SavedVacancyButton } from './SavedVacancyButton'
 
 type VacancyCardProps = {
     vacancy: Vacancy
@@ -28,6 +28,7 @@ export const VacancyCard = memo(function VacancyCard({
     vacancy,
 }: VacancyCardProps) {
     const titleId = `vacancy-${vacancy.id}-title`
+    const vacancyPath = routePaths.vacancy.replace(':id', vacancy.id)
 
     return (
         <article
@@ -57,10 +58,7 @@ export const VacancyCard = memo(function VacancyCard({
                         </p>
                     </div>
                 </div>
-                <HiBookmark
-                    aria-hidden="true"
-                    className="text-muted size-5 shrink-0"
-                />
+                <SavedVacancyButton vacancyId={vacancy.id} />
             </div>
 
             <div className="text-muted mt-4 grid gap-2 text-sm">
@@ -106,11 +104,11 @@ export const VacancyCard = memo(function VacancyCard({
                     {vacancy.salary}
                 </p>
                 <Link
-                    aria-label={`Відгукнутися на вакансію ${vacancy.title}`}
+                    aria-label={`Переглянути вакансію ${vacancy.title}`}
                     className="text-primary hover:bg-accent focus-visible:outline-accent inline-flex h-9 items-center justify-center gap-2 rounded-md border border-transparent px-3 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
-                    to={routePaths.contacts}
+                    to={vacancyPath}
                 >
-                    Відгукнутися
+                    Детальніше
                     <HiArrowRight
                         aria-hidden="true"
                         className="size-4"

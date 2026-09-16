@@ -5,6 +5,7 @@ import type {
     CountriesResponse,
     ExchangeRatesResponse,
     HolidaysResponse,
+    VacancyResponse,
     VacanciesResponse,
 } from '@/types/api'
 import type { CountryKey } from '@/types/domain'
@@ -70,6 +71,20 @@ export function fetchCountries(): Promise<ApiResponse<CountriesResponse>> {
 
 export function fetchVacancies(): Promise<ApiResponse<VacanciesResponse>> {
     return mockFetch(() => vacancies)
+}
+
+export function fetchVacancyById(
+    id: string
+): Promise<ApiResponse<VacancyResponse>> {
+    return mockFetch(() => {
+        const vacancy = vacancies.find((item) => item.id === id)
+
+        if (!vacancy) {
+            throw new Error('Вакансію не знайдено')
+        }
+
+        return vacancy
+    })
 }
 
 export function fetchVacanciesByPartnerSlug(

@@ -9,6 +9,7 @@ import { PartnerPage } from '@/pages/PartnerPage'
 import { PartnersPage } from '@/pages/PartnersPage'
 import { PrivacyPolicyPage } from '@/pages/PrivacyPolicyPage'
 import { TermsPage } from '@/pages/TermsPage'
+import { VacancyDetailsPage } from '@/pages/VacancyDetailsPage'
 import { VacanciesPage } from '@/pages/VacanciesPage'
 import { routePaths } from '@/routePaths'
 
@@ -23,6 +24,10 @@ export const router = createBrowserRouter([
             {
                 path: routePaths.vacancies,
                 element: <VacanciesPage />,
+            },
+            {
+                path: routePaths.vacancy,
+                element: <VacancyDetailsPage />,
             },
             {
                 path: routePaths.about,
