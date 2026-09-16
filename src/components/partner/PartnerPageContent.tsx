@@ -1,9 +1,13 @@
+import { useCallback, useMemo, useState } from 'react'
 import { HiBriefcase } from 'react-icons/hi2'
 
 import { VacancyGrid } from '@/components/home'
+import { Pagination } from '@/components/ui'
 import type { Partner, Vacancy } from '@/types'
 
 import { PartnerDetails } from './PartnerDetails'
+
+const PARTNER_VACANCIES_PER_PAGE = 24
 
 export function PartnerPageContent({
     partner,
@@ -12,6 +16,26 @@ export function PartnerPageContent({
     partner: Partner
     vacancies: Vacancy[]
 }) {
+    const [currentPage, setCurrentPage] = useState(1)
+    const totalPages = Math.ceil(vacancies.length / PARTNER_VACANCIES_PER_PAGE)
+    const displayedVacancies = useMemo(() => {
+        const startIndex = (currentPage - 1) * PARTNER_VACANCIES_PER_PAGE
+
+        return vacancies.slice(
+            startIndex,
+            startIndex + PARTNER_VACANCIES_PER_PAGE
+        )
+    }, [currentPage, vacancies])
+
+    const handlePageChange = useCallback((page: number) => {
+        setCurrentPage(page)
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        })
+    }, [])
+
     return (
         <div className="grid gap-10">
             <PartnerDetails partner={partner} />
@@ -31,7 +55,14 @@ export function PartnerPageContent({
                 </div>
 
                 {vacancies.length > 0 ? (
-                    <VacancyGrid vacancies={vacancies} />
+                    <>
+                        <VacancyGrid vacancies={displayedVacancies} />
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
+                    </>
                 ) : (
                     <PartnerVacanciesEmpty />
                 )}
