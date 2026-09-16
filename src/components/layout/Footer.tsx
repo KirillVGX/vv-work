@@ -19,8 +19,8 @@ const candidateLinks = [
 ]
 
 const employerLinks = [
-    { label: 'Розмістити вакансію', to: routePaths.contacts },
-    { label: 'Переваги', to: '#benefits' },
+    { label: 'Розмістити вакансію', to: routePaths.employers },
+    { label: 'Переваги', to: routePaths.employers },
     { label: 'Співпраця', to: routePaths.contacts },
 ]
 

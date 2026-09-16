@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router'
 import { AppLayout } from '@/components/layout'
 import { AboutPage } from '@/pages/AboutPage'
 import { ContactsPage } from '@/pages/ContactsPage'
+import { EmployersPage } from '@/pages/EmployersPage'
 import { HomePage } from '@/pages/HomePage'
 import { PartnerPage } from '@/pages/PartnerPage'
 import { PartnersPage } from '@/pages/PartnersPage'
@@ -26,6 +27,10 @@ export const router = createBrowserRouter([
             {
                 path: routePaths.about,
                 element: <AboutPage />,
+            },
+            {
+                path: routePaths.employers,
+                element: <EmployersPage />,
             },
             {
                 path: routePaths.partner,

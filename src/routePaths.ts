@@ -1,6 +1,7 @@
 export const routePaths = {
     home: '/',
     about: '/about-us',
+    employers: '/employers',
     vacancies: '/vacancies',
     contacts: '/kontakty',
     partners: '/partners',

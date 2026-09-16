@@ -20,7 +20,7 @@ export function PartnersPage() {
             spacing="none"
         >
             <Container>
-                <div className="mb-8 max-w-3xl">
+                <div className="mb-8 max-w-4xl">
                     <p className="text-muted text-sm font-extrabold tracking-[0.28em] uppercase">
                         Партнери
                     </p>
